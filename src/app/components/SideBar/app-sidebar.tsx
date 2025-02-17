@@ -1,27 +1,24 @@
-
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
     SidebarHeader,
 } from "@/components/ui/sidebar";
 import Chats from "./Chats/Chats";
+import Header from "./Header/Header";
+
 
 export function AppSidebar() {
+
     return (
-        <Sidebar >
+        <Sidebar>
             <SidebarHeader>
-                header
+                <Header/>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <Chats />
-                </SidebarGroup>
+                <Chats />
             </SidebarContent>
-            <SidebarFooter>
-                footer
-            </SidebarFooter>
+            <SidebarFooter></SidebarFooter>
         </Sidebar>
     );
 }
