@@ -6,7 +6,7 @@ import {
     SidebarGroup,
     SidebarHeader,
 } from "@/components/ui/sidebar";
-import Chats from "./ChatsSection/Chats";
+import Chats from "./Chats/Chats";
 
 export function AppSidebar() {
     return (

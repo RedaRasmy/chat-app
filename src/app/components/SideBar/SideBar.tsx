@@ -1,4 +1,4 @@
-import SearchInput from "./SearchInput";
+import SearchInput from "./Header/SearchInput";
 
 
 export default function SideBar() {

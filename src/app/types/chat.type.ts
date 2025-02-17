@@ -9,5 +9,8 @@ export type Chat = {
     id : string,
     name: string,
     messages : Message[],
-    participants : string[]
+    participants : string[],
+    unreadMessages? : number,
+    lastMessage? : string,
+    lastMessageTime? : string
 }
