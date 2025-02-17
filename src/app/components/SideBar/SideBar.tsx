@@ -1,7 +1,10 @@
-import React from "react";
+import SearchInput from "./SearchInput";
+
 
 export default function SideBar() {
-    return <div className="w-1/3 bg-slate-800">
-
-    </div>;
+    return (
+        <div className="xl:flex flex-col p-4 hidden w-[40%] bg-slate-800">
+            <SearchInput/>
+        </div>
+    )
 }
