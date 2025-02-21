@@ -6,8 +6,9 @@ import React from "react";
 export default async function UserLabel() {
 
     const session = await getServerSession()
+    
     const user = session?.user
-
+    
     console.log(user)
 
     if (user) return (
@@ -17,6 +18,7 @@ export default async function UserLabel() {
                 <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <h1 className="font-semibold tracking-wider text-lg">{user.name} Reda</h1>
+            {user.role === 'admin' && <p className="text-yellow-600">(admin)</p>}
         </div>
     )
 }

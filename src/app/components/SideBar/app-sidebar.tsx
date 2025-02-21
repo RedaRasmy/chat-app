@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import Chats from "./Chats/Chats";
 import Header from "./Header/Header";
-import Link from "next/link";
+import LogoutButton from "./Footer/LogoutButton";
 
 export function AppSidebar() {
     return (
@@ -18,9 +18,7 @@ export function AppSidebar() {
                 <Chats />
             </SidebarContent>
             <SidebarFooter>
-                <Link href={"/api/auth/signout?callbackUrl=/"}>
-                    Logout
-                </Link>
+                <LogoutButton/>
             </SidebarFooter>
         </Sidebar>
     );

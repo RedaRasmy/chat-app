@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
 
-mongoose.connect(process.env.MONGODB_URI ?? '')
-
 const UserSchema = new mongoose.Schema({
-    username : String,
-    email: {
-        type: String,
-        immutable: true,
-        unique: true,
+    username : {
+        type:String,
+        required:true,
+        minLength : 3 ,
         lowercase: true,
+        unique : true
     },
-    password : String,
+    password : {
+        type: String,
+        required : true,
+        minLength: 8
+    },
 }, {timestamps: true});
 
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
