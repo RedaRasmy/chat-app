@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1740577885079,
+      "tag": "0000_dazzling_hedge_knight",
+      "breakpoints": true
+    }
+  ]
+}
