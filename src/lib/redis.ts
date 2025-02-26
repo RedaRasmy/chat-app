@@ -7,4 +7,5 @@ const getRedisUrl = () => {
     throw new Error('REDIS_URL is not defined')
 }
 
+// redis token ??
 export const redis = new Redis(getRedisUrl())
