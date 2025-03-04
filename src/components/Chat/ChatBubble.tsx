@@ -1,5 +1,4 @@
 
-
 type ChatBubbleProps = {
     content : string,
     isUserMessage : boolean,
