@@ -1,9 +1,8 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 
-export default async function UserLabel() {
+export default function UserLabel() {
 
-    
     return (
         <div className="flex items-center gap-2 p-2 mb-2 cursor-pointer">
             <Avatar >

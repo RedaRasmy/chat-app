@@ -1,9 +1,15 @@
 import { Chat } from "@/app/types/chat.type";
+import { useCurrentChatStore } from "@/states/currentChatStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 export default function ChatLabel({ chat }: { chat: Chat }) {
+    const updateCurrentChat = useCurrentChatStore((state)=>state.updateCurrentChat)
+
     return (
-        <div className="flex items-center justify-between space-x-2 cursor-pointer">
+        <div 
+            className="flex items-center justify-between space-x-2 cursor-pointer"
+            onClick={()=>updateCurrentChat(chat.id)}
+        >
             <Avatar className="size-8 rounded-full bg-slate-400 flex justify-center items-center">
                 <AvatarImage
                     className="rounded-full"
