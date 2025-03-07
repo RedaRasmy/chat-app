@@ -1,20 +1,18 @@
 import { uuid, text, pgTable, varchar, timestamp, pgEnum } from "drizzle-orm/pg-core";
 
-export const userRoles = ['admin','user'] as const
+export const usersRoles = ['admin','user'] as const
 export const participantsRoles = ['super','admin','user'] as const
 
-export type UserRole = typeof userRoles[number]
-export type ParticipantRole = typeof participantsRoles[number]
+export type UsersRole = typeof usersRoles[number]
+export type ParticipantsRole = typeof participantsRoles[number]
 
-export const userRoleEnum = pgEnum('user_roles',userRoles)
+export const userRoleEnum = pgEnum('user_roles',usersRoles)
 export const participantsRoleEnum = pgEnum('participants_roles',participantsRoles)
 
 export const users = pgTable("users", {
-    id: uuid().primaryKey(),
-    username: varchar({ length: 30 }).notNull().unique(),
-    email : text().notNull().unique(),
-    password: text().notNull(),
-    salt : text().notNull(),
+    id: uuid().primaryKey() ,
+    username: varchar({ length: 30 }).notNull().unique() ,
+    email : text().notNull().unique() ,
     role : userRoleEnum().notNull().default('user') ,
     createdAt: timestamp().defaultNow().notNull() ,
     updatedAt : timestamp().defaultNow().$onUpdate(()=>new Date).notNull()

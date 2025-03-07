@@ -14,13 +14,13 @@ const passwordSchema = z
     .max(50, "Password must be at most 50 characters long");
 
 
-export const signUpSchema = z.object({
+export const registerSchema = z.object({
     username: usernameSchema,
     email: emailSchema,
     password: passwordSchema,
 });
 
-export const signInSchema = z.object({
+export const loginSchema = z.object({
     usernameOrEmail: z.union([usernameSchema, emailSchema]),
     password: passwordSchema,
 });

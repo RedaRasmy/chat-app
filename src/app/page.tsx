@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Sidebar from "@/components/SideBar/Sidebar";
 import Chat from "../components/Chat/Chat";
 import {
@@ -6,12 +6,11 @@ import {
     ResizableHandle,
     ResizablePanel,
 } from "@/components/ui/resizable";
-import { useCurrentChatStore } from "@/states/currentChatStore";
+import { useCurrentChatStore } from "@/zustand/currentChatStore";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
-    const currentChatId = useCurrentChatStore(state=>state.currentChatId)
-    
+    const currentChatId = useCurrentChatStore((state) => state.currentChatId);
 
     return (
         <div className="flex h-full">
@@ -21,8 +20,8 @@ export default function Home() {
                     minSize={20}
                     maxSize={60}
                     className={cn({
-                        'flex' : currentChatId === undefined,
-                        'hidden md:flex' : currentChatId !== undefined
+                        flex: currentChatId === undefined,
+                        "hidden md:flex": currentChatId !== undefined,
                     })}
                 >
                     <Sidebar />
@@ -31,11 +30,11 @@ export default function Home() {
                 <ResizablePanel
                     defaultSize={70}
                     className={cn({
-                        'flex' : currentChatId !== undefined,
-                        'hidden md:flex' : currentChatId === undefined
+                        flex: currentChatId !== undefined,
+                        "hidden md:flex": currentChatId === undefined,
                     })}
                 >
-                    <Chat chatId={currentChatId}/>
+                    <Chat chatId={currentChatId} />
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

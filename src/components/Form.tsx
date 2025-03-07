@@ -1,3 +1,4 @@
+'use client'
 import { z } from "zod";
 import { Input } from "./ui/input";
 import { useForm } from "react-hook-form";
