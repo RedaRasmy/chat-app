@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ChatLabel from "./ChatLabel";
 import { Separator } from "@/components/ui/separator";
 import { mockChats } from "./mockChats";
-import { Plus } from "lucide-react";
+import { NewChatModal } from "./newChatModal";
 
 export default function Chats() {
     const [chats] = useState<Chat[]>(mockChats);
@@ -13,7 +13,7 @@ export default function Chats() {
         <div className="mt-5 flex-1">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="pl-4 text-xl">Chats</h1>
-                <Plus className="cursor-pointer"/> 
+                <NewChatModal/> 
             </div>
             <span className="sr-only">new chat</span>
             {chats.map((chat) => (

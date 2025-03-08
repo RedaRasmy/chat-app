@@ -8,9 +8,15 @@ import {
 } from "@/components/ui/resizable";
 import { useCurrentChatStore } from "@/zustand/currentChatStore";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
+import { addUser } from "@/actions";
 
 export default function Home() {
     const currentChatId = useCurrentChatStore((state) => state.currentChatId);
+    
+    useEffect(()=>{
+        addUser()
+    },[])
 
     return (
         <div className="flex h-full">
