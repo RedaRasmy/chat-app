@@ -1,5 +1,5 @@
 
-import { relations, sql } from "drizzle-orm";
+import { relations, sql  } from "drizzle-orm";
 import {
     text,
     pgTable,
@@ -8,6 +8,7 @@ import {
     boolean,
     uuid,
     check,
+    
 } from "drizzle-orm/pg-core";
 
 const timestamps = {
@@ -24,6 +25,7 @@ export type UserRoles = (typeof usersRoles)[number];
 
 export const usersRolesEnum = pgEnum("users_roles", usersRoles);
 
+// MARK: USERS
 
 export const users = pgTable("users", {
     id: uuid().primaryKey().defaultRandom(),
@@ -32,6 +34,9 @@ export const users = pgTable("users", {
     role: usersRolesEnum().notNull().default("user"),
     ...timestamps
 });
+
+
+// MARK: CHATS
 
 export const chats = pgTable("chats", {
     id : uuid().primaryKey().defaultRandom() ,
@@ -43,6 +48,8 @@ export const chats = pgTable("chats", {
     ]
 );
 
+// MARK: MESSAGES
+
 export const messages = pgTable("messages", {
     id: uuid().primaryKey().defaultRandom(),
     chatId: uuid().notNull().references(()=>chats.id),
@@ -52,10 +59,14 @@ export const messages = pgTable("messages", {
     createdAt: timestamp().defaultNow().notNull(),
 });
 
+// MARK: USERS RELATIONS
+
 export const usersRelations = relations(users,({many})=>({
     chats : many(chats),
     messages : many(messages)
 }))
+
+// MARK: MESSAGES RELATIONS
 
 export const messagesRelations = relations(messages,({one})=>({
     sender : one(users,{
@@ -67,6 +78,8 @@ export const messagesRelations = relations(messages,({one})=>({
         references: [chats.id]
     })
 }))
+
+// MARK: CHATS RELATIONS
 
 export const chatsRelations = relations(chats,({many,one})=>({
     messages : many(messages),

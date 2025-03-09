@@ -3,19 +3,30 @@ import type { Chat } from "@/app/types/chat.type";
 import ChatHeader from "./ChatHeader";
 import ChatInputs from "./ChatInputs";
 import Messages from "./Messages";
-import { mockChats } from "../SideBar/Chats/mockChats";
 import { cn } from "@/lib/utils";
+import { FullChat } from "@/db/types";
+import { getChatName } from "@/utils/getChatName";
+import { useUserStore } from "@/zustand/userStore";
+import { useEffect } from "react";
+import { socket } from "@/ws/socket";
+import { useCurrentChatStore } from "@/zustand/currentChatStore";
 
-export default function Chat({chatId}:{
-    chatId : string | undefined
+export default function Chat({chat}:{
+    chat : FullChat | undefined
 }) {
-    // fetch chat by id
-    const chat = mockChats.filter(chat=>chat.id === chatId)[0]
+    const chatId = useCurrentChatStore(state=>state.currentChat?.id)
+    useEffect(()=>{
+        if (chatId) {
+            socket.emit('join-chat',chatId)
+        }
+    },[chatId])
 
-    if (chat) return (
+    const username = useUserStore(state=>state.user)?.username
+
+    if (chat && username) return (
         <div className={cn("gap-5 flex flex-col w-full h-full")}>
-            <ChatHeader chatName={chat.name}/>
-            <Messages/>
+            <ChatHeader chatName={getChatName(chat,username ?? '')}/>
+            <Messages messages={chat.messages}/>
             <ChatInputs/>
         </div>
     )

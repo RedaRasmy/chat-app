@@ -8,15 +8,14 @@ import {
 } from "@/components/ui/resizable";
 import { useCurrentChatStore } from "@/zustand/currentChatStore";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
-import { addUser } from "@/actions";
+import useInitUser from "@/hooks/useInitUser";
+import Loading from "./loading";
 
 export default function Home() {
-    const currentChatId = useCurrentChatStore((state) => state.currentChatId);
-    
-    useEffect(()=>{
-        addUser()
-    },[])
+    const currentChat = useCurrentChatStore((state) => state.currentChat);
+    const isLoading = useInitUser()
+
+    if (isLoading) return <Loading/>
 
     return (
         <div className="flex h-full">
@@ -26,8 +25,8 @@ export default function Home() {
                     minSize={20}
                     maxSize={60}
                     className={cn({
-                        flex: currentChatId === undefined,
-                        "hidden md:flex": currentChatId !== undefined,
+                        flex: currentChat === undefined,
+                        "hidden md:flex": currentChat !== undefined,
                     })}
                 >
                     <Sidebar />
@@ -36,11 +35,11 @@ export default function Home() {
                 <ResizablePanel
                     defaultSize={70}
                     className={cn({
-                        flex: currentChatId !== undefined,
-                        "hidden md:flex": currentChatId === undefined,
+                        flex: currentChat !== undefined,
+                        "hidden md:flex": currentChat === undefined,
                     })}
                 >
-                    <Chat chatId={currentChatId} />
+                    <Chat chat={currentChat} />
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

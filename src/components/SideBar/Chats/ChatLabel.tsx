@@ -1,34 +1,39 @@
-import { Chat } from "@/app/types/chat.type";
+// import { Chat } from "@/app/types/chat.type";
 import { useCurrentChatStore } from "@/zustand/currentChatStore";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import MyAvatar from "./MyAvatar";
+import { FullChat,  } from "@/db/types";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { getChatName } from "@/utils/getChatName";
 
-export default function ChatLabel({ chat }: { chat: Chat }) {
+
+export default function ChatLabel({ chat }: { chat: FullChat }) {
+    const {getUser} = useKindeBrowserClient()
+    const username : string = getUser()?.username
     const updateCurrentChat = useCurrentChatStore(
         (state) => state.updateCurrentChat
     );
 
+    console.log(username)
+
+    const name = getChatName(chat,username)
+    
+
     return (
         <div
             className="flex items-center justify-between space-x-2 cursor-pointer"
-            onClick={() => updateCurrentChat(chat.id)}
+            onClick={() => updateCurrentChat(chat)}
         >
-            <Avatar className="size-8 rounded-full bg-slate-400 flex justify-center items-center">
-                <AvatarImage
-                    className="rounded-full"
-                    src=""
-                    alt="@shadcn"
-                />
-                <AvatarFallback>{chat.name[0]}</AvatarFallback>
-            </Avatar>
+            <MyAvatar name={name}/>
+
             <div className="flex flex-col flex-1">
-                <p>{chat.name}</p>
-                <p className="text-xs text-slate-500">{chat.lastMessage}</p>
+                <p>{name}</p>
+                {/* <p className="text-xs text-slate-500">{chat.lastMessage}</p> */}
             </div>
             <div className="flex flex-col ">
-                <p className="text-xs">{chat.lastMessageTime}</p>
-                <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
+                {/* <p className="text-xs">{chat.lastMessageTime}</p> */}
+                {/* <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
                     {chat.unreadMessages}
-                </p>
+                </p> */}
             </div>
         </div>
     );

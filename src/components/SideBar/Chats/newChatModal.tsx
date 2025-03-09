@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+
 import {
     Dialog,
     DialogContent,
@@ -12,10 +12,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import Results from "./Results";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 export function NewChatModal() {
-    const [query,] = useState('')
+    const [query,setQuery] = useState('')
+
+    function handleSubmit(e:FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        const data = new FormData(e.currentTarget)
+        const currentQuery = data.get('query')
+        if (currentQuery) {
+            setQuery(currentQuery as string)
+        }
+    }
 
     return (
         <Dialog>
@@ -30,7 +39,9 @@ export function NewChatModal() {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <form 
+                        onSubmit={handleSubmit} 
+                        className="grid grid-cols-4 items-center gap-4">
                         <Label
                             htmlFor="username"
                             className="text-right"
@@ -38,14 +49,14 @@ export function NewChatModal() {
                             Username
                         </Label>
                         <Input
+                            name="query"
                             id="username"
                             className="col-span-3"
                         />
-                    </div>
+                    </form>
                     <Results query={query} />
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
