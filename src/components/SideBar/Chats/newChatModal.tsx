@@ -9,7 +9,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import Results from "./Results";
 import { FormEvent, useState } from "react";
@@ -41,14 +40,15 @@ export function NewChatModal() {
                 <div className="grid gap-4 py-4">
                     <form 
                         onSubmit={handleSubmit} 
-                        className="grid grid-cols-4 items-center gap-4">
-                        <Label
+                        className="px-4 mb-3">
+                        {/* <Label
                             htmlFor="username"
                             className="text-right"
                         >
                             Username
-                        </Label>
+                        </Label> */}
                         <Input
+                            placeholder="Username"
                             name="query"
                             id="username"
                             className="col-span-3"

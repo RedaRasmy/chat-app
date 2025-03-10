@@ -2,25 +2,29 @@
 import { SendHorizonal } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { Button } from "../ui/button";
-
-import { useCurrentChatStore } from "@/zustand/currentChatStore";
-import { useUserStore } from "@/zustand/userStore";
 import { socket } from "@/ws/socket";
-import { addMessage } from "@/actions";
+import useUser from "@/hooks/useUser";
+import { useCurrentChatId } from "@/hooks/useCurrentChat";
+import useMutationChats from "@/hooks/useMutationChats";
 
 export default function ChatInputs() {
     const [message, setMessage] = useState("");
-    const chatId = useCurrentChatStore((state) => state.currentChat)?.id;
-    const senderId = useUserStore((state) => state.user)?.id;
+    const {id:userId} = useUser();
+    
+    const chatId = useCurrentChatId();
+    const { addNewMessage } = useMutationChats();
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log("send message");
-        if (chatId && senderId) {
-            const newMessage = await addMessage(senderId,chatId,message)
-            socket.emit("send-message", newMessage );
+        const newMessage = chatId && await addNewMessage({
+            chatId,
+            content: message,
+            userId,
+        });
+        if (newMessage) {
+            socket.emit("send-message", newMessage);
         }
-        setMessage('')
+        setMessage("");
     }
 
     return (

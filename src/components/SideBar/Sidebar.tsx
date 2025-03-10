@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 export default function Sidebar() {
 
     return (
-        <div className={cn("px-4 flex flex-col w-full h-full ")}>
+        <div className={cn("px-4 py-4 flex flex-col w-full h-full ")}>
             <Header/>
             <Chats/>
             <LogoutButton/>

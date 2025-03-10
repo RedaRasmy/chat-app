@@ -1,16 +1,27 @@
 import { useUserStore } from "@/zustand/userStore";
 import ChatBubble from "./ChatBubble";
 import { SMessage } from "@/db/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { socket } from "@/ws/socket";
+import useMutationChats from "@/hooks/useMutationChats";
+import { useCurrentChatId } from "@/hooks/useCurrentChat";
 
 export default function Messages({ messages }: { messages: SMessage[] }) {
     const userId = useUserStore((state) => state.user)?.id;
-    const [rtMessages, setMessages] = useState<SMessage[]>([]);
+    const {addReceivedMessage} = useMutationChats()
+    const addReceivedMessageRef = useRef(addReceivedMessage)
+    const chatId = useCurrentChatId()
+    const bottomRef = useRef<HTMLDivElement>(null)
+
+    useEffect(()=>{
+        bottomRef.current?.scrollIntoView({behavior:'smooth'})
+    },[messages])
 
     useEffect(() => {
         const handleMessage = (message: SMessage) => {
-            setMessages((prev) => [...prev, message]);
+            if (chatId) {
+                addReceivedMessageRef.current({message,chatId})
+            }
         };
 
         socket.on("receive-message", handleMessage);
@@ -18,10 +29,10 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
         return () => {
             socket.off("receive-message", handleMessage); 
         };
-    }, []);
+    }, [chatId]);
 
     return (
-        <div className="w-full px-4 flex-1">
+        <div className="w-full overflow-y-scroll px-4 flex-1">
             {messages.map((message) => (
                 <ChatBubble
                     author={message.senderId}
@@ -30,14 +41,7 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
                     isUserMessage={message.senderId === userId}
                 />
             ))}
-            {rtMessages.map((message) => (
-                <ChatBubble
-                    author={message.senderId}
-                    key={message.id}
-                    content={message.content}
-                    isUserMessage={message.senderId === userId}
-                />
-            ))}
+            <div ref={bottomRef}></div>
         </div>
     );
 }

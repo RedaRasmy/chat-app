@@ -1,10 +1,8 @@
-import { useCurrentChatStore } from "@/zustand/currentChatStore";
+import {  useUpdateCurrentChat } from "@/hooks/useCurrentChat";
 import { EllipsisVertical, MoveLeft } from "lucide-react";
 
 export default function ChatHeader({ chatName }: { chatName: string }) {
-    const updateCurrentChat = useCurrentChatStore(
-        (state) => state.updateCurrentChat
-    );
+    const updateCurrentChat = useUpdateCurrentChat()
 
     return (
         <div className="bg-gray-500 min-h-10 text-black justify-between flex items-center px-4">

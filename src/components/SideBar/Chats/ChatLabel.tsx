@@ -9,8 +9,8 @@ import { getChatName } from "@/utils/getChatName";
 export default function ChatLabel({ chat }: { chat: FullChat }) {
     const {getUser} = useKindeBrowserClient()
     const username : string = getUser()?.username
-    const updateCurrentChat = useCurrentChatStore(
-        (state) => state.updateCurrentChat
+    const updateCurrentChatId = useCurrentChatStore(
+        (state) => state.updateCurrentChatId
     );
 
     console.log(username)
@@ -21,7 +21,7 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
     return (
         <div
             className="flex items-center justify-between space-x-2 cursor-pointer"
-            onClick={() => updateCurrentChat(chat)}
+            onClick={() => updateCurrentChatId(chat.id)}
         >
             <MyAvatar name={name}/>
 

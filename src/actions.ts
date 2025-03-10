@@ -1,54 +1,58 @@
 "use server";
-
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from "./db/drizzle";
 import { chats, messages, users } from "./db/schema";
-import { and, eq, ilike, ne, or } from "drizzle-orm";
+import { and, eq, ilike, ne, notInArray, or } from "drizzle-orm";
+import { IUser } from "./db/types";
 
 // MARK: ADD USER
 
-export const addUser = async () => {
-    const { getUser, getPermission } = getKindeServerSession();
-    const isAdmin = (await getPermission("access:dashboard"))?.isGranted;
-    const role = isAdmin ? "admin" : "user";
-    const user = await getUser();
+export const addUser = async ({username,email,role}:IUser) => {
 
     const foundUser = await db.query.users.findFirst({
-        where: eq(users.email, user.email ?? ""),
+        where: eq(users.email, email),
     });
 
     if (foundUser) {
         return foundUser;
     }
 
-    if (user.username && user.email) {
-        const newUser = (
-            await db
-                .insert(users)
-                .values({
-                    username: user.username,
-                    email: user.email,
-                    role,
-                })
-                .returning()
-        )[0];
-        return newUser;
-    }
+    const newUser = (
+        await db
+            .insert(users)
+            .values({
+                username,
+                email,
+                role,
+            })
+            .returning()
+    )[0];
+    return newUser;
+
 };
 
 // MARK: GET SUGGESTION
 
-export const getSuggestedUsers = async () => {
-    const userId = (await getCurrentUser())?.id;
+export const getSuggestedUsers = async ({userId,friendsIds}:{
+    userId : string,
+    friendsIds : string[]
+}) => {
+    // const userId = (await getCurrentUser())?.id;
 
-    if (!userId) {
-        return;
-    }
+    // if (!userId) {
+    //     return;
+    // }
+    // const freinds = 
 
     const suggestedUsers = await db
         .select()
         .from(users)
-        .where(ne(users.id, userId))
+        .where(
+            and(
+                ne(users.id, userId),
+                notInArray(users.id, friendsIds)
+            )
+        )
         .limit(5);
 
     return suggestedUsers;
@@ -157,18 +161,22 @@ export const addChat = async (participant2: string) => {
 
 // MARK: ADD MESSAGE
 
-export const addMessage = async (
-    userId: string,
-    chatId: string,
-    content: string
-) => {
+export const addMessage = async ({
+    chatId,
+    content,
+    userId,
+}: {
+    userId: string;
+    chatId: string;
+    content: string;
+}) => {
     const newMessage = (
         await db
             .insert(messages)
             .values({ chatId, content, senderId: userId })
             .returning()
     )[0];
-    return newMessage
+    return newMessage;
 };
 
 // i think i need to use websocket on this

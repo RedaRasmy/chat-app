@@ -6,13 +6,13 @@ import {
     ResizableHandle,
     ResizablePanel,
 } from "@/components/ui/resizable";
-import { useCurrentChatStore } from "@/zustand/currentChatStore";
 import { cn } from "@/lib/utils";
 import useInitUser from "@/hooks/useInitUser";
 import Loading from "./loading";
+import { useCurrentChatId } from "@/hooks/useCurrentChat";
 
 export default function Home() {
-    const currentChat = useCurrentChatStore((state) => state.currentChat);
+    const currentChat = useCurrentChatId()
     const isLoading = useInitUser()
 
     if (isLoading) return <Loading/>
@@ -39,7 +39,7 @@ export default function Home() {
                         "hidden md:flex": currentChat === undefined,
                     })}
                 >
-                    <Chat chat={currentChat} />
+                    <Chat />
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

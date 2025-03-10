@@ -1,22 +1,22 @@
-import { FullChat, SMessage } from '@/db/types'
-import {create} from 'zustand'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type CurrentChatStore = {
-    currentChat : FullChat | undefined,
-    updateCurrentChat : (id : FullChat|undefined) => void ,
-    // appendMessage : (message:SMessage) => void
-}
+    currentChatId: string | undefined;
+    updateCurrentChatId: (id: string | undefined) => void;
+};
 
-export const useCurrentChatStore = create<CurrentChatStore>((set)=>({
-    currentChat : undefined ,
-    updateCurrentChat : (chat) => set({
-        currentChat : chat
-    }),
-    // appendMessage : async (message) => set(state => ({
-    //     currentChat = {
-    //         ...state.currentChat,
-    //         messages : [...state.currentChat?.messages,message]
-    //     }
-    // }))
-}))
-
+export const useCurrentChatStore = create<CurrentChatStore>()(
+    persist(
+        (set) => ({
+            currentChatId: undefined,
+            updateCurrentChatId: (id) =>
+                set({
+                    currentChatId: id,
+                }),
+        }),
+        {
+            name: "currentChatId",
+        }
+    )
+);

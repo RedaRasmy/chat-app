@@ -1,27 +1,14 @@
-"use client";
-import {  useEffect, useState } from "react";
+
 import ChatLabel from "./ChatLabel";
 import { Separator } from "@/components/ui/separator";
 import { NewChatModal } from "./newChatModal";
-import { FullChat } from "@/db/types";
-import { getFullChats } from "@/actions";
+import useQueryChats from "@/hooks/useQueryChats";
 
 export default function Chats() {
 
-    // const [chats] = useState<Chat[]>(mockChats);
-    const [isLoading,setIsLoading] = useState(false)
-    const [chats,setChats] = useState<FullChat[]>([]);
+    const {chats} = useQueryChats()
 
-    useEffect(()=>{
-        const getUserChats = async () => {
-            setIsLoading(true)
-            const data = await getFullChats()
-            setIsLoading(false)
-            setChats(data ?? [])
-        }
-        console.log('getting chats ..')
-        getUserChats()
-    },[])
+    // if (isLoading) return <p>Loading...</p>
 
     return (
         <div className="mt-5 flex-1">
@@ -31,14 +18,13 @@ export default function Chats() {
             </div>
             <span className="sr-only">new chat</span>
             {
-                !isLoading ? 
+                !!chats &&
                 chats.map((chat) => (
                     <div key={chat.id}>
                         <ChatLabel chat={chat} />
                         <Separator className="my-2" />
                     </div>
                 ))
-                : <span>Loading...</span>
             }
         </div>
     );
