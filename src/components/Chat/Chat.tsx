@@ -4,23 +4,14 @@ import ChatInputs from "./ChatInputs";
 import Messages from "./Messages";
 import { cn } from "@/lib/utils";
 import { getChatName } from "@/utils/getChatName";
-import { useEffect } from "react";
-import { socket } from "@/ws/socket";
-import { useCurrentChatId } from "@/hooks/useCurrentChat";
-import useQueryChats from "@/hooks/useQueryChats";
 import useUser from "@/hooks/useUser";
+import useJoinChat from "@/hooks/useJoinChat";
 
 export default function Chat() {
-    const chatId = useCurrentChatId()
-    const {getFullChatById,isLoading} = useQueryChats()
-    const chat = chatId ?  getFullChatById(chatId) : undefined
-
-    console.log("is Loading : ",isLoading)
-    useEffect(()=>{
-        socket.emit('join-chat',chatId)
-    },[chatId])
 
     const user = useUser()
+
+    const {chat,isLoading} = useJoinChat()
 
     if (isLoading) return <p> loading the chat ...</p>
 

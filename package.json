@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
+    "migrate": "drizzle-kit migrate",
+    "open" : "cypress open"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.0",

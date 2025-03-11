@@ -7,7 +7,7 @@ import useMutationChats from "@/hooks/useMutationChats";
 import { useCurrentChatId } from "@/hooks/useCurrentChat";
 
 export default function Messages({ messages }: { messages: SMessage[] }) {
-    const userId = useUserStore((state) => state.user)?.id;
+    const userId = useUserStore((state) => state.user?.id)
     const {addReceivedMessage} = useMutationChats()
     const addReceivedMessageRef = useRef(addReceivedMessage)
     const chatId = useCurrentChatId()
@@ -19,7 +19,7 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
 
     useEffect(() => {
         const handleMessage = (message: SMessage) => {
-            if (chatId) {
+            if (chatId && message) {
                 addReceivedMessageRef.current({message,chatId})
             }
         };
@@ -30,6 +30,8 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
             socket.off("receive-message", handleMessage); 
         };
     }, [chatId]);
+
+    console.log('messages : ',messages)
 
     return (
         <div className="w-full overflow-y-scroll px-4 flex-1">

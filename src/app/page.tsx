@@ -18,7 +18,7 @@ export default function Home() {
     if (isLoading) return <Loading/>
 
     return (
-        <div className="flex h-full">
+        <div data-testid="page" className="flex h-full">
             <ResizablePanelGroup direction="horizontal">
                 <ResizablePanel
                     defaultSize={30}

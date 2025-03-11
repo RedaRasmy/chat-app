@@ -73,6 +73,7 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                 set((state)=>{
                     const chat = state.chats?.find(chat=>chat.id === chatId)
                     if (chat) {
+                        console.log('message before pushing :',message)
                         chat.messages.push(message)
                     }
                 })
