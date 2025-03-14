@@ -6,5 +6,6 @@ export default function useUser() {
     if (!user) {
         throw new Error('User not defined')
     }
+    
     return user
 }

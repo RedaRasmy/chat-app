@@ -4,16 +4,11 @@ import ChatInputs from "./ChatInputs";
 import Messages from "./Messages";
 import { cn } from "@/lib/utils";
 import { getChatName } from "@/utils/getChatName";
-import useUser from "@/hooks/useUser";
-import useJoinChat from "@/hooks/useJoinChat";
+import useChatRoom from "@/hooks/useChatRoom";
 
 export default function Chat() {
 
-    const user = useUser()
-
-    const {chat,isLoading} = useJoinChat()
-
-    if (isLoading) return <p> loading the chat ...</p>
+    const {user,chat} = useChatRoom()
 
     if (chat) return (
         <div className={cn("gap-5 flex flex-col w-full h-full")}>

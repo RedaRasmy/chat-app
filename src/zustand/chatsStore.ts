@@ -1,8 +1,8 @@
-import { addChat, addMessage } from "@/actions";
+import { addChat, addMessage, getFullChatById } from "@/actions";
 import { FullChat, SChat, SMessage } from "@/db/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import {persist} from 'zustand/middleware'
+import { persist } from "zustand/middleware";
 
 type ChatsState = {
     chats: FullChat[] | undefined;
@@ -11,27 +11,26 @@ type ChatsState = {
 
 type ChatsActions = {
     setChats: (chats: FullChat[]) => void;
-    addNewChat: (participant2: string) => Promise<SChat|undefined>;
-    addNewMessage: ( {chatId,content,userId}:
-        {
-            chatId: string,
-            userId: string,
-            content: string
-        }
-    ) => Promise<SMessage | undefined>;
-    addReceivedMessage: ({message,chatId}:{
-        message : SMessage,
-        chatId : string
-    }) => void
+    addNewChat: (participant2: string) => Promise<SChat | undefined>;
+    addNewMessage: ({
+        chatId,
+        content,
+        userId,
+    }: {
+        chatId: string;
+        userId: string;
+        content: string;
+    }) => Promise<SMessage | undefined>;
+    addReceivedMessage: (message: SMessage) => void;
 };
 
 export const useChatsStore = create<ChatsState & ChatsActions>()(
     persist(
-        immer((set) => ({
+        immer((set, get) => ({
             chats: undefined,
             isLoading: false,
             setChats: (chats) =>
-                set({  
+                set({
                     chats,
                 }),
             addNewChat: async (participant2) => {
@@ -41,9 +40,11 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                     set({ isLoading: false });
                     if (newChat) {
                         set((state) => ({
-                            chats: state.chats ? [...state.chats, newChat] : [newChat],
+                            chats: state.chats
+                                ? [...state.chats, newChat]
+                                : [newChat],
                         }));
-                        return newChat
+                        return newChat;
                     }
                 } catch (error) {
                     console.error("Failed to add new chat : ", error);
@@ -51,36 +52,60 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                     set({ isLoading: false });
                 }
             },
-            addNewMessage: async ({chatId, userId, content}) => {
+            addNewMessage: async ({ chatId, userId, content }) => {
                 try {
                     set({ isLoading: true });
-                    const newMessage = await addMessage({userId, chatId, content});
+                    const newMessage = await addMessage({
+                        userId,
+                        chatId,
+                        content,
+                    });
                     set({ isLoading: false });
-                    set(state => {
-                        const chat = state.chats?.find(chat=>chat.id===chatId)
+                    set((state) => {
+                        const chat = state.chats?.find(
+                            (chat) => chat.id === chatId
+                        );
                         if (chat) {
-                            chat.messages.push(newMessage)
+                            chat.messages.push(newMessage);
                         }
-                    })
-                    return newMessage
+                    });
+                    return newMessage;
                 } catch (error) {
                     console.error("Failed to add new Message : ", error);
                 } finally {
                     set({ isLoading: false });
                 }
             },
-            addReceivedMessage : ({message,chatId}) => {
-                set((state)=>{
-                    const chat = state.chats?.find(chat=>chat.id === chatId)
-                    if (chat) {
-                        console.log('message before pushing :',message)
-                        chat.messages.push(message)
+            addReceivedMessage: async (message) => {
+                console.log('adding received message...')
+                const chat = get().chats?.find(
+                    (chat) => chat.id === message.chatId
+                );
+                if (chat) {
+                    set((draft) => {
+                        const existingChat = draft.chats?.find(
+                            (chat) => chat.id === message.chatId
+                        );
+                        if (existingChat) {
+                            existingChat.messages.push(message);
+                        }
+                    });
+                } else {
+                    const newChat = await getFullChatById(message.chatId);
+                    if (newChat) {
+                        set((draft)=>{
+                            if (draft.chats) {
+                                draft.chats.push(newChat)
+                            } else {
+                                draft.chats = [newChat]
+                            }
+                        })
                     }
-                })
-            }
+                }
+            },
         })),
         {
-            name: 'chats'
+            name: "chats",
         }
     )
 );

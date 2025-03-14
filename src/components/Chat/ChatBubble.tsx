@@ -1,27 +1,28 @@
-
 type ChatBubbleProps = {
-    content : string,
-    isUserMessage : boolean,
-    author?: string
-}
+    content: string;
+    isUserMessage: boolean;
+    author?: string;
+};
 
 export default function ChatBubble({
-    content,isUserMessage,
-}:ChatBubbleProps) {
-
-    if (isUserMessage) return (
-        <div>
-            <div className="chat chat-end justify-end">
-                <div className="chat-bubble">{content}</div>
+    content,
+    isUserMessage,
+}: ChatBubbleProps) {
+    if (isUserMessage)
+        return (
+            <div className="chat chat-end ">
+                <MessageContent content={content} />
             </div>
-        </div>
-    );
+        );
     return (
         <div className="chat chat-start">
-            <div className="chat-bubble ">
-                {/* <p className="text-xs text-amber-400 mb-1">{author}</p> */}
-                {content}
-            </div>
+            <MessageContent content={content} />
         </div>
     );
 }
+
+const MessageContent = ({ content }: { content: string }) => (
+    <div className="chat-bubble pr-7 break-words ">
+        {content}
+    </div>
+);

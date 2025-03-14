@@ -1,39 +1,42 @@
-// import { Chat } from "@/app/types/chat.type";
-import { useCurrentChatStore } from "@/zustand/currentChatStore";
 import MyAvatar from "./MyAvatar";
-import { FullChat,  } from "@/db/types";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { FullChat } from "@/db/types";
 import { getChatName } from "@/utils/getChatName";
-
+import useUser from "@/hooks/useUser";
+import { useUpdateCurrentChat } from "@/hooks/useCurrentChat";
 
 export default function ChatLabel({ chat }: { chat: FullChat }) {
-    const {getUser} = useKindeBrowserClient()
-    const username : string = getUser()?.username
-    const updateCurrentChatId = useCurrentChatStore(
-        (state) => state.updateCurrentChatId
-    );
+    const { username, id } = useUser();
+    const updateCurrentChatId = useUpdateCurrentChat();
 
-    console.log(username)
+    const FriendName = getChatName(chat, username);
 
-    const name = getChatName(chat,username)
-    
+    const lastMessage = chat.messages[chat.messages.length - 1];
+    const unSeenMessages = chat.messages.filter(
+        (message) => message.senderId !== id && !message.seen
+    ).length;
 
     return (
         <div
-            className="flex items-center justify-between space-x-2 cursor-pointer"
+            className="flex items-center justify-between gap-3 cursor-pointer"
             onClick={() => updateCurrentChatId(chat.id)}
         >
-            <MyAvatar name={name}/>
+            <MyAvatar name={FriendName} />
 
-            <div className="flex flex-col flex-1">
-                <p>{name}</p>
-                {/* <p className="text-xs text-slate-500">{chat.lastMessage}</p> */}
-            </div>
-            <div className="flex flex-col ">
-                {/* <p className="text-xs">{chat.lastMessageTime}</p> */}
-                {/* <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
-                    {chat.unreadMessages}
-                </p> */}
+            <div className="grid grid-rows-2 w-full -space-y-2">
+                <div className="flex items-center justify-between ">
+                    <p className="font-semibold">{FriendName}</p>
+                    <p className="text-xs text-nowrap">{"5:19 AM"}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                    <p className="text-xs -mb-1 text-slate-500 overflow-hidden w-[80%] whitespace-nowrap text-ellipsis">
+                        {lastMessage.content}
+                    </p>
+                    {!!unSeenMessages && (
+                        <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
+                            {unSeenMessages}
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -3,7 +3,8 @@ import useResults from "@/hooks/useResults";
 
 export default function Results({ query }: { query: string }) {
     
-    const {results,isLoading,isSuggest} = useResults(query)
+    const {results,isLoading,friendsIds} = useResults(query)
+    const isSuggest = query === ''
 
     return (
         <div className="">
@@ -11,6 +12,7 @@ export default function Results({ query }: { query: string }) {
             {!isLoading ?
                 results.map((user) => (
                     <ResultUserLabel
+                        isFriend={friendsIds.includes(user.id)}
                         key={user.id}
                         username={user.username}
                         id={user.id}

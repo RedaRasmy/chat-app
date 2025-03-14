@@ -9,12 +9,15 @@ import { IUser } from "./db/types";
 
 export const addUser = async ({username,email,role}:IUser) => {
 
-    const foundUser = await db.query.users.findFirst({
-        where: eq(users.email, email),
-    });
-
-    if (foundUser) {
-        return foundUser;
+    try {
+        const foundUser = await db.query.users.findFirst({
+            where: eq(users.email, email),
+        });
+        if (foundUser) {
+            return foundUser;
+        }
+    } catch (error) {
+        console.error('failed to add user : ',error);
     }
 
     const newUser = (
@@ -96,7 +99,7 @@ export const getCurrentUser = async () => {
     return user;
 };
 
-// MARK: GET CHATS
+// MARK: GET FULL CHATS
 
 export const getFullChats = async () => {
     const user = await getCurrentUser();
@@ -122,7 +125,8 @@ export const getFullChats = async () => {
     return chatsFound;
 };
 
-// MARK: GET CHAT
+// MARK: GET FULL CHAT
+
 export const getFullChatById = async (chatId: string) => {
     const chatFound = await db.query.chats.findFirst({
         where: eq(chats.id, chatId),
@@ -179,12 +183,28 @@ export const addMessage = async ({
     return newMessage;
 };
 
-// i think i need to use websocket on this
-// export const getMessages = async (chatId:string) => {
-//     const chatMessages = await db.
-//         query.messages.findMany({
-//             with: {
+// MARK: GET UNSEEN
 
-//             }
-//         })
-// }
+export const getUnseenMessages = async (userId:string) => {
+    const unseenMessages = await db.query.messages.findMany({
+        where : and(
+            eq(messages.seen , false),
+            ne(messages.senderId,userId)
+        )
+    })
+    return unseenMessages
+
+}
+
+// MARK: SEE CHAT
+
+export const seeChat = async (userId:string,chatId:string) => {
+    await db.update(messages)
+        .set({seen:true})
+        .where(
+            and(
+                eq(messages.chatId , chatId),
+                ne(messages.senderId , userId)
+            )
+        )
+}

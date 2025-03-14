@@ -1,37 +1,18 @@
-import { useUserStore } from "@/zustand/userStore";
+
 import ChatBubble from "./ChatBubble";
 import { SMessage } from "@/db/types";
 import { useEffect, useRef } from "react";
-import { socket } from "@/ws/socket";
-import useMutationChats from "@/hooks/useMutationChats";
-import { useCurrentChatId } from "@/hooks/useCurrentChat";
+import useUser from "@/hooks/useUser";
 
 export default function Messages({ messages }: { messages: SMessage[] }) {
-    const userId = useUserStore((state) => state.user?.id)
-    const {addReceivedMessage} = useMutationChats()
-    const addReceivedMessageRef = useRef(addReceivedMessage)
-    const chatId = useCurrentChatId()
-    const bottomRef = useRef<HTMLDivElement>(null)
-
-    useEffect(()=>{
-        bottomRef.current?.scrollIntoView({behavior:'smooth'})
-    },[messages])
+    const {id} = useUser()
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const handleMessage = (message: SMessage) => {
-            if (chatId && message) {
-                addReceivedMessageRef.current({message,chatId})
-            }
-        };
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
-        socket.on("receive-message", handleMessage);
-
-        return () => {
-            socket.off("receive-message", handleMessage); 
-        };
-    }, [chatId]);
-
-    console.log('messages : ',messages)
+    // console.log("messages : ", messages);
 
     return (
         <div className="w-full overflow-y-scroll px-4 flex-1">
@@ -40,7 +21,7 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
                     author={message.senderId}
                     key={message.id}
                     content={message.content}
-                    isUserMessage={message.senderId === userId}
+                    isUserMessage={message.senderId === id}
                 />
             ))}
             <div ref={bottomRef}></div>

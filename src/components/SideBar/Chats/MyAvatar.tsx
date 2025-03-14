@@ -7,7 +7,7 @@ export default function MyAvatar({
     image?: string
 }) {
     return (
-        <Avatar className="size-8 rounded-full bg-slate-400 flex justify-center items-center">
+        <Avatar className="size-10 rounded-full bg-slate-400 flex justify-center items-center">
             <AvatarImage
                 className="rounded-full"
                 src={image}
