@@ -1,23 +1,26 @@
-import { useEffect, } from "react";
+import { useEffect, useRef, } from "react";
 import { useCurrentChatId } from "./useCurrentChat";
 import useUser from "./useUser";
-import { seeChat } from "@/actions";
 import useChatsQuery from "./useChatsQuery";
 import useSocket from "./useSocket";
+import useChatsMutation from "./useChatsMutation";
 
 export default function useChatRoom() {
     const user = useUser();
     const chatId = useCurrentChatId()
     const {socket} = useSocket()
+    const {seeMessages} = useChatsMutation()
+    const seeMessagesRef = useRef(seeMessages)
 
     useEffect(()=>{
-        async function seeMessages() {
+        async function seeChat() {
             if (chatId) {
-                await seeChat(user.id,chatId)
+                socket.emit("join-chat", chatId)
+                await seeMessagesRef.current({userId:user.id,chatId})
             }
         }
-        seeMessages()
-    },[chatId,user.id])
+        seeChat()
+    },[chatId,user.id,socket])
     
 
     const chats = useChatsQuery(); // this is a probleme render in each change on all chats
@@ -25,10 +28,16 @@ export default function useChatRoom() {
 
     
     useEffect(() => {
-        if (chatId) {
-            socket.emit("join-chat", chatId)
+        async function seeMessage() {
+            if (chatId) {
+                await seeMessagesRef.current({userId:user.id,chatId})
+            }
         }
-    }, [chatId,socket]);
+        if (chatId) {
+            socket.on("receive-message", seeMessage )
+        }
+        return () => {socket.off('receive-message')}
+    }, [chatId,socket,user.id]);
 
     return {
         chatId,user,chat

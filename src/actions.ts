@@ -2,7 +2,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from "./db/drizzle";
 import { chats, messages, users } from "./db/schema";
-import { and, eq, ilike, ne, notInArray, or } from "drizzle-orm";
+import { and, asc, eq, ilike, ne, notInArray, or } from "drizzle-orm";
 import { IUser } from "./db/types";
 
 // MARK: ADD USER
@@ -101,14 +101,7 @@ export const getCurrentUser = async () => {
 
 // MARK: GET FULL CHATS
 
-export const getFullChats = async () => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-        return;
-    }
-
-    const userId = user.id;
+export const getFullChats = async (userId:string) => {
 
     const chatsFound = await db.query.chats.findMany({
         where: or(
@@ -118,7 +111,9 @@ export const getFullChats = async () => {
         with: {
             participant1: true,
             participant2: true,
-            messages: true,
+            messages: {
+                orderBy : [asc(messages.createdAt)]
+            },
         },
     });
 
@@ -193,12 +188,11 @@ export const getUnseenMessages = async (userId:string) => {
         )
     })
     return unseenMessages
-
 }
 
 // MARK: SEE CHAT
 
-export const seeChat = async (userId:string,chatId:string) => {
+export const seeChat = async ({userId,chatId}:{userId:string,chatId:string}) => {
     await db.update(messages)
         .set({seen:true})
         .where(

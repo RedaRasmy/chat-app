@@ -1,4 +1,4 @@
-import { addChat, addMessage, getFullChatById } from "@/actions";
+import { addChat, addMessage, getFullChatById, seeChat } from "@/actions";
 import { FullChat, SChat, SMessage } from "@/db/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -21,7 +21,8 @@ type ChatsActions = {
         userId: string;
         content: string;
     }) => Promise<SMessage | undefined>;
-    addReceivedMessage: (message: SMessage) => void;
+    addReceivedMessage: (message: SMessage) => Promise<void>;
+    seeMessages : ({userId,chatId}:{userId:string,chatId:string}) => Promise<void>
 };
 
 export const useChatsStore = create<ChatsState & ChatsActions>()(
@@ -103,6 +104,19 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                     }
                 }
             },
+            seeMessages : async ({chatId,userId}) => {
+                set((draft)=> {
+                    const chat = draft.chats?.find(chat=>chat.id === chatId)
+                    if (chat) {
+                        chat.messages.forEach(message=>{
+                            if (message.senderId !== userId && !message.seen) {
+                                message.seen = true
+                            }
+                        })
+                    }
+                })
+                await seeChat({userId,chatId})
+            }
         })),
         {
             name: "chats",
