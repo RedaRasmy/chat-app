@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSocket from "./useSocket";
 import useChatsMutation from "./useChatsMutation";
 import { getFullChats, getUnseenMessages } from "@/actions";
@@ -7,7 +7,7 @@ import { useChatsStore } from "@/zustand/chatsStore";
 // import useChatsQuery from "./useChatsQuery";
 
 export default function useChatApp() {
-    const { socket, connect, disconnect } = useSocket();
+    const { socket,  } = useSocket();
     const { addReceivedMessage } = useChatsMutation();
     const addReceivedMessageRef = useRef(addReceivedMessage);
     const { id } = useUser();
@@ -15,7 +15,7 @@ export default function useChatApp() {
     const chats = useChatsStore((state) => state.chats);
     const setChats = useChatsStore((state) => state.setChats);
     const setChatsRef = useRef(setChats)
-    
+    const chatsIds = useMemo(()=>chats?.map(chat=>chat.id),[chats])
     // set chats if undefined 
 
     useEffect(() => {
@@ -40,12 +40,16 @@ export default function useChatApp() {
 
     // Connection
 
-    useEffect(() => {
-        if (!socket.connected) {
-            connect();
-        }
-        return () => disconnect();
-    }, [connect, socket.connected, disconnect]);
+    // useEffect(() => {
+    //     if (!socket.connected) {
+    //         connect();
+    //     }
+    //     return () => disconnect();
+    // }, [connect, socket.connected, disconnect]);
+
+    useEffect(()=>{
+        socket.emit('join-chats',chatsIds)
+    },[socket,chatsIds])
 
     useEffect(() => {
         async function getUnseen() {

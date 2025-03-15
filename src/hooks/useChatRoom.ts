@@ -15,7 +15,7 @@ export default function useChatRoom() {
     useEffect(()=>{
         async function seeChat() {
             if (chatId) {
-                socket.emit("join-chat", chatId)
+                socket.emit("send-see-chat", chatId)
                 await seeMessagesRef.current({userId:user.id,chatId})
             }
         }

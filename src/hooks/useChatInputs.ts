@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import useSocket from "./useSocket";
 import { useCurrentChatId } from "./useCurrentChat";
 import useUser from "./useUser";
@@ -11,6 +11,13 @@ export default function useChatInputs() {
     const chatId = useCurrentChatId()
 
     const { addNewMessage } = useChatsMutation();
+
+    useEffect(()=>{
+        if (message.length > 0) {
+            console.log('typing')
+            socket.emit('send-typing',chatId)
+        }
+    },[message.length,socket,chatId])
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();

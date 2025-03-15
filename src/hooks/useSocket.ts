@@ -1,4 +1,4 @@
-import { useSocketStore } from "@/zustand/socketStore";
+import { useSocketStore } from "@/zustand/useSocketStore";
 
 
 export default function useSocket() {

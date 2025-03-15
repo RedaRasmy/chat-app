@@ -4,6 +4,7 @@ import { getChatName } from "@/utils/getChatName";
 import useUser from "@/hooks/useUser";
 import { useUpdateCurrentChat } from "@/hooks/useCurrentChat";
 import getLastMessageDate from "@/utils/getLastMessageDate";
+import useIsTyping from "@/hooks/useIsTyping";
 
 export default function ChatLabel({ chat }: { chat: FullChat }) {
     const { username, id } = useUser();
@@ -16,6 +17,8 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
     const unSeenMessages = chat.messages.filter(
         (message) => message.senderId !== id && !message.seen
     ).length;
+
+    const isTyping = useIsTyping(chat.id)
 
     return (
         <div
@@ -31,7 +34,7 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
                 </div>
                 <div className="flex items-center justify-between">
                     <p className="text-xs -mb-1 text-slate-500 overflow-hidden w-[80%] whitespace-nowrap text-ellipsis">
-                        {lastMessage.content}
+                        {isTyping ? <span className="text-green-400">typing...</span> : lastMessage.content}
                     </p>
                     {!!unSeenMessages && (
                         <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
