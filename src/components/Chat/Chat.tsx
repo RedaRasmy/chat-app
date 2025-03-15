@@ -3,7 +3,7 @@ import ChatHeader from "./ChatHeader";
 import ChatInputs from "./ChatInputs";
 import Messages from "./Messages";
 import { cn } from "@/lib/utils";
-import { getChatName } from "@/utils/getChatName";
+import { getOtherParticipant } from "@/utils/getChatName";
 import useChatRoom from "@/hooks/useChatRoom";
 
 export default function Chat() {
@@ -13,7 +13,7 @@ export default function Chat() {
     if (chat) return (
         <div className={cn("gap-5 flex flex-col w-full h-full")}>
             <>
-                <ChatHeader chatName={getChatName(chat,user.username)}/>
+                <ChatHeader chatName={getOtherParticipant(chat,user.id).username}/>
                 <Messages messages={chat.messages}/>
                 <ChatInputs/>
             </> 
