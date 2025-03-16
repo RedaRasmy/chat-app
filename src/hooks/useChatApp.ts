@@ -49,8 +49,10 @@ export default function useChatApp() {
     }, [socket, chatsIds]);
 
     useEffect(() => {
+        
         async function getUnseen() {
             const unseenMessages = await getUnseenMessages(id);
+            console.log('unsseen messages :',unseenMessages)
             for (const message of unseenMessages) {
                 addReceivedMessageRef.current(message);
             }

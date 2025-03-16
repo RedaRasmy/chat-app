@@ -10,7 +10,6 @@ export default function useResults(query: string) {
     const { id } = useUser();
     const chats = useChatsQuery();
     const friendsIds = useMemo(() => getFreindsIds(chats, id), [chats, id]);
-    // const friendsIds = getFreindsIds(useChatsQuery(),id)
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {

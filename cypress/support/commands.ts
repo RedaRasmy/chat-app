@@ -36,6 +36,15 @@
 //   }
 // }
 
-Cypress.Commands.add('login',()=>{
-    cy.visit('/')
+Cypress.Commands.add('login',(username,password) =>{
+    cy.session([username,password],()=>{
+        cy.visit('/')
+        cy.url().should('include','https://chatappbyreda.kinde.com')
+        cy.get('input[id="sign_up_sign_in_credentials_p_username"]').type(username)
+        cy.get('button[type="submit"]').click()
+        cy.get('input[id="verify_password_p_password"]').type(password)
+        cy.get('button[data-kinde-button="true"]').click()
+        cy.wait(1000)
+        cy.get('[data-testid="chatApp"]').should("exist")
+    })
 })

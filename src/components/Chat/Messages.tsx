@@ -16,18 +16,20 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
 
 
     return (
-        <div className="w-full overflow-y-scroll px-4 flex-1 ">
-            {messages.map((message) => (
-                <ChatBubble
-                    author={message.senderId}
-                    key={message.id}
-                    content={message.content}
-                    isUserMessage={message.senderId === id}
-                    time={getMessageDate(message.createdAt)}
-                />
-            ))}
-            <div ref={bottomRef}></div>
-            <TypingActivity/>
+        <div className="w-full flex overflow-y-scroll flex-col px-4 flex-1 ">
+            <div className="flex-1 ">
+                {messages.map((message) => (
+                    <ChatBubble
+                        author={message.senderId}
+                        key={message.id}
+                        content={message.content}
+                        isUserMessage={message.senderId === id}
+                        time={getMessageDate(message.createdAt)}
+                    />
+                ))}
+            </div>
+            <div ref={bottomRef} className=""><TypingActivity/></div>
+            
         </div>
     );
 }

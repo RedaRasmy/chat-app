@@ -29,7 +29,13 @@ export default function useChatInputs() {
                 userId,
             })
             if (newMessage) {
-                socket.emit("send-message", newMessage);
+                socket.emit("send-message", newMessage , (response:{status:'ok'|'not ok'})=> {
+                    if (response.status === 'ok') {
+                        // handle success (message sended to server)
+                    } else {
+                        // handle failure (server didnt get the message)
+                    }
+                });
             }
         }
     }

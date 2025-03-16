@@ -40,12 +40,6 @@ export const getSuggestedUsers = async ({userId,friendsIds}:{
     userId : string,
     friendsIds : string[]
 }) => {
-    // const userId = (await getCurrentUser())?.id;
-
-    // if (!userId) {
-    //     return;
-    // }
-    // const freinds = 
 
     const suggestedUsers = await db
         .select()
@@ -137,18 +131,38 @@ export const getFullChatById = async (chatId: string) => {
 
 // MARK: ADD CHAT
 
-export const addChat = async (participant2: string) => {
-    const user = await getCurrentUser();
+export const addChat = async ({participant1,participant2}:{
+    participant1:string,
+    participant2:string
+}) => {
 
-    if (!user || user.id === participant2) {
-        return;
+    const existingChat = await db.query.chats.findFirst({
+        where : or(
+            and(
+                eq(chats.participant1 , participant1) ,
+                eq(chats.participant2 , participant2)
+            ),
+            and(
+                eq(chats.participant1 , participant2) ,
+                eq(chats.participant2 , participant1)
+            )
+        ) ,
+        with : {
+            participant1:true,
+            participant2:true,
+            messages:true
+        }
+    })
+
+    if (existingChat) {
+        return existingChat
     }
 
     const id = (
         await db
             .insert(chats)
             .values({
-                participant1: user.id,
+                participant1: participant1,
                 participant2: participant2,
             })
             .returning({ id: chats.id })

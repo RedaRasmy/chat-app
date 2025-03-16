@@ -12,6 +12,7 @@ export default function ChatApp() {
     
     return (
         <div
+        data-testid='chatApp'
         className="flex h-full"
     >
         <ResizablePanelGroup direction="horizontal">

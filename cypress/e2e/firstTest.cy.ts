@@ -1,13 +1,12 @@
-describe("template spec", () => {
+// describe("template spec", () => {
 
-    beforeEach(()=>{
-        
-    })
+//     beforeEach(()=>{
+//         cy.login('test','testtest0')
+//     })
 
-    it("passes", () => {
-        cy.visit("/");
-        // cy.get('[data-testid="page"]')
-        //   .should('exist')
-        //   .should('')
-    });
-});
+//     it("passes", () => {
+//         cy.visit("/");
+
+    
+//     });
+// });

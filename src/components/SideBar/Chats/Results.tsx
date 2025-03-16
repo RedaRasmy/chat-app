@@ -6,6 +6,8 @@ export default function Results({ query }: { query: string }) {
     const {results,isLoading,friendsIds} = useResults(query)
     const isSuggest = query === ''
 
+    console.log(friendsIds)
+
     return (
         <div className="">
             <h1>{isSuggest ? "Suggestions" : "Results"}</h1>

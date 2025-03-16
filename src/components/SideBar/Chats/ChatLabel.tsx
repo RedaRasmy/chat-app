@@ -12,8 +12,8 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
 
     const friend = getOtherParticipant(chat, id);
 
-    const lastMessage = chat.messages[chat.messages.length - 1];
-    const lastMessageDate = getLastMessageDate(lastMessage.createdAt);
+    const lastMessage = !!chat.messages.length ? chat.messages[chat.messages.length - 1] : undefined
+    const lastMessageDate = lastMessage && getLastMessageDate(lastMessage.createdAt);
     const unSeenMessages = chat.messages.filter(
         (message) => message.senderId !== id && !message.seen
     ).length;
@@ -42,7 +42,7 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
                         {isTyping ? (
                             <span className="text-green-400">typing...</span>
                         ) : (
-                            lastMessage.content
+                            lastMessage?.content ?? <span className="text-green-400">new chat!</span>
                         )}
                     </p>
                     {!!unSeenMessages && (
