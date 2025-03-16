@@ -192,7 +192,18 @@ export const getUnseenMessages = async (userId:string) => {
 
 // MARK: SEE CHAT
 
-export const seeChat = async ({userId,chatId}:{userId:string,chatId:string}) => {
+
+export const seeChat = async ({senderId,chatId}:{senderId:string,chatId:string}) => {
+    await db.update(messages)
+        .set({seen:true})
+        .where(
+            and(
+                eq(messages.chatId , chatId),
+                eq(messages.senderId , senderId)
+            )
+        )
+}
+export const seeChatWithUser = async ({userId,chatId}:{userId:string,chatId:string}) => {
     await db.update(messages)
         .set({seen:true})
         .where(

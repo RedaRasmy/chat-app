@@ -4,19 +4,24 @@ import useChatsMutation from "./useChatsMutation";
 import { getFullChats, getUnseenMessages } from "@/actions";
 import useUser from "./useUser";
 import { useChatsStore } from "@/zustand/chatsStore";
+import { useCurrentChatId } from "./useCurrentChat";
 // import useChatsQuery from "./useChatsQuery";
 
 export default function useChatApp() {
-    const { socket,  } = useSocket();
+    const { socket } = useSocket();
     const { addReceivedMessage } = useChatsMutation();
     const addReceivedMessageRef = useRef(addReceivedMessage);
     const { id } = useUser();
     const [isLoading, setIsLoading] = useState(false);
     const chats = useChatsStore((state) => state.chats);
     const setChats = useChatsStore((state) => state.setChats);
-    const setChatsRef = useRef(setChats)
-    const chatsIds = useMemo(()=>chats?.map(chat=>chat.id),[chats])
-    // set chats if undefined 
+    const setChatsRef = useRef(setChats);
+    const chatsIds = useMemo(
+        () => chats?.map((chat) => chat.id) ?? [],
+        [chats]
+    );
+    // set chats if undefined
+    const chatId = useCurrentChatId();
 
     useEffect(() => {
         const getUserChats = async () => {
@@ -38,18 +43,10 @@ export default function useChatApp() {
         getUserChats();
     }, [chats, id]);
 
-    // Connection
 
-    // useEffect(() => {
-    //     if (!socket.connected) {
-    //         connect();
-    //     }
-    //     return () => disconnect();
-    // }, [connect, socket.connected, disconnect]);
-
-    useEffect(()=>{
-        socket.emit('join-chats',chatsIds)
-    },[socket,chatsIds])
+    useEffect(() => {
+        socket.emit("join-chats", chatsIds);
+    }, [socket, chatsIds]);
 
     useEffect(() => {
         async function getUnseen() {
@@ -59,19 +56,19 @@ export default function useChatApp() {
             }
         }
         getUnseen();
-    }, [id]);
+    }, [id, chatId]);
 
     // Listen for events
 
     useEffect(() => {
         console.log("receiving message ? ...(useEffect)");
-        // console.log('socket is connected :',socket.connected)
-        // if (socket.connected) {
-            // console.log('ws connected')
-        socket.on("receive-message", addReceivedMessageRef.current);
-        // }
-        return () => {socket.off('receive-message')}
-    }, [socket]);
+        socket.on("receive-message", (message) =>
+            addReceivedMessageRef.current(message, message.chatId === chatId)
+        );
+        return () => {
+            socket.off("receive-message");
+        };
+    }, [socket, chatId]);
 
-    return {isLoading}
+    return { isLoading };
 }

@@ -26,18 +26,6 @@ export default function useChatRoom() {
     const chats = useChatsQuery(); // this is a probleme render in each change on all chats
     const chat = chatId ? chats.find(chat=>chat.id === chatId) : undefined
 
-    
-    useEffect(() => {
-        async function seeMessage() {
-            if (chatId) {
-                await seeMessagesRef.current({userId:user.id,chatId})
-            }
-        }
-        if (chatId) {
-            socket.on("receive-message", seeMessage )
-        }
-        return () => {socket.off('receive-message')}
-    }, [chatId,socket,user.id]);
 
     return {
         chatId,user,chat

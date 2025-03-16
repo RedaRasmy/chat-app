@@ -1,4 +1,4 @@
-import { addChat, addMessage, getFullChatById, seeChat } from "@/actions";
+import { addChat, addMessage, getFullChatById, seeChat, seeChatWithUser } from "@/actions";
 import { FullChat, SChat, SMessage } from "@/db/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -21,8 +21,8 @@ type ChatsActions = {
         userId: string;
         content: string;
     }) => Promise<SMessage | undefined>;
-    addReceivedMessage: (message: SMessage) => Promise<void>;
-    seeMessages : ({userId,chatId}:{userId:string,chatId:string}) => Promise<void>
+    addReceivedMessage: (message: SMessage,seen?:boolean) => Promise<void>;
+    seeMessages: ({userId,chatId}:{userId:string,chatId:string}) => Promise<void>
 };
 
 export const useChatsStore = create<ChatsState & ChatsActions>()(
@@ -34,6 +34,7 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                 set({
                     chats,
                 }),
+            // MARK: ADD NEW CHAT
             addNewChat: async (participant2) => {
                 set({ isLoading: true });
                 try {
@@ -53,6 +54,7 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                     set({ isLoading: false });
                 }
             },
+            // MARK: ADD NEW MESSAGE
             addNewMessage: async ({ chatId, userId, content }) => {
                 try {
                     set({ isLoading: true });
@@ -77,8 +79,8 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                     set({ isLoading: false });
                 }
             },
-            addReceivedMessage: async (message) => {
-                console.log('adding received message...')
+            // MARK: ADD RECEIVED MESSAGE
+            addReceivedMessage: async (message, seen=false) => {
                 const chat = get().chats?.find(
                     (chat) => chat.id === message.chatId
                 );
@@ -88,7 +90,8 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                             (chat) => chat.id === message.chatId
                         );
                         if (existingChat) {
-                            existingChat.messages.push(message);
+                            console.log('the received message will get seen=', seen)
+                            existingChat.messages.push({...message,seen});
                         }
                     });
                 } else {
@@ -103,19 +106,25 @@ export const useChatsStore = create<ChatsState & ChatsActions>()(
                         })
                     }
                 }
+                if (seen) {
+                    await seeChat({chatId:message.chatId,senderId:message.senderId})
+                }
             },
+            // MARK: SEE MESSAGES
             seeMessages : async ({chatId,userId}) => {
                 set((draft)=> {
-                    const chat = draft.chats?.find(chat=>chat.id === chatId)
-                    if (chat) {
-                        chat.messages.forEach(message=>{
-                            if (message.senderId !== userId && !message.seen) {
-                                message.seen = true
-                            }
-                        })
-                    }
+                    draft.chats?.forEach(chat=> {
+                        if (chat.id === chatId) {
+                            chat.messages.forEach(message=>{
+                                if (message.senderId !== userId && !message.seen) {
+                                    message.seen = true
+                                    console.log('new message.seen : ', message.seen)
+                                }
+                            })
+                        }
+                    })
                 })
-                await seeChat({userId,chatId})
+                await seeChatWithUser({userId,chatId})
             }
         })),
         {

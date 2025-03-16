@@ -17,6 +17,8 @@ export default function Chats() {
         setChats(data);
     }
 
+    console.log('chats compo rerender : ',chats)
+
     return (
         <div className="mt-5 flex-1">
             <div className="flex items-center justify-between mb-4">

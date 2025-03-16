@@ -13,7 +13,7 @@ export default function MyAvatar({
                 src={image}
                 alt="avatar"
             />
-            <AvatarFallback>{name[0]}</AvatarFallback>
+            <AvatarFallback className="capitalize">{name[0]}</AvatarFallback>
         </Avatar>
     );
 }

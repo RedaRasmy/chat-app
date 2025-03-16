@@ -29,7 +29,7 @@ export default function ChatLabel({ chat }: { chat: FullChat }) {
 
             <div className="grid grid-rows-2 w-full -space-y-2">
                 <div className="flex items-center justify-between ">
-                    <p className="font-semibold ">
+                    <p className="font-semibold flex items-center">
                         {friend.username}
                         {friend.role === "admin" && (
                             <span className="text-yellow-500 text-xs ml-2">(admin)</span>
