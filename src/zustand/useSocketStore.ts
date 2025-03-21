@@ -10,7 +10,7 @@ type SocketStore = {
 
 export const useSocketStore = create<SocketStore>()(
     immer((set) => ({
-        socket: io("http://localhost:3500"),
+        socket: io(),
         connect: () => {
             set((draft)=>{
                 if (!draft.socket.connected) {
