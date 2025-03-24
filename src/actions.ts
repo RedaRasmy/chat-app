@@ -1,5 +1,4 @@
 "use server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from "./db/drizzle";
 import { chats, messages, users } from "./db/schema";
 import { and, asc, eq, ilike, ne, notInArray, or } from "drizzle-orm";
@@ -7,7 +6,7 @@ import { IUser } from "./db/types";
 
 // MARK: ADD USER
 
-export const addUser = async ({username,email,role}:IUser) => {
+export const addUser = async ({username,email,imageUrl}:IUser) => {
 
     try {
         const foundUser = await db.query.users.findFirst({
@@ -26,7 +25,7 @@ export const addUser = async ({username,email,role}:IUser) => {
             .values({
                 username,
                 email,
-                role,
+                imageUrl,
             })
             .returning()
     )[0];
@@ -62,7 +61,8 @@ export const getUsersByUsername = async (query: string) => {
         return;
     }
 
-    const userId = (await getCurrentUser())?.id;
+    // const userId = (await getCurrentUser())?.id;
+    const userId = 'taslik'
 
     if (!userId) {
         return;
@@ -76,22 +76,6 @@ export const getUsersByUsername = async (query: string) => {
     return usersFound;
 };
 
-// MARK: GET USER
-
-export const getCurrentUser = async () => {
-    const { getUser } = getKindeServerSession();
-    const email = (await getUser()).email;
-
-    if (!email) {
-        return;
-    }
-
-    const user = (
-        await db.select().from(users).where(eq(users.email, email))
-    )[0];
-
-    return user;
-};
 
 // MARK: GET FULL CHATS
 

@@ -1,8 +1,7 @@
 
-import useInitUser from './useInitUser'
 
 export default function useInit() {
-    const isLoading1 = useInitUser()
+    // const isLoading1 = useInitUser()
 
-    return isLoading1 
+    // return isLoading1 
 }
