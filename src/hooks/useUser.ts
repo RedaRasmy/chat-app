@@ -1,5 +1,5 @@
 import { useUserStore } from "@/zustand/userStore";
-import {useUser as useClerkkUser} from '@clerk/nextjs'
+// import {useUser as useClerkkUser} from '@clerk/nextjs'
 
 export default function useUser() {
     const user = useUserStore(state=>state.user)
