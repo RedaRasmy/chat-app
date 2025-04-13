@@ -3,11 +3,11 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from "./db/drizzle";
 import { chats, messages, users } from "./db/schema";
 import { and, asc, eq, ilike, ne, notInArray, or } from "drizzle-orm";
-import { IUser } from "./db/types";
+import { IUser, SUser } from "./db/types";
 
 // MARK: ADD USER
 
-export const addUser = async ({username,email,role}:IUser) => {
+export const addUser = async ({username,email,role}:IUser):Promise<SUser> => {
 
     try {
         const foundUser = await db.query.users.findFirst({
@@ -17,20 +17,26 @@ export const addUser = async ({username,email,role}:IUser) => {
             return foundUser;
         }
     } catch (error) {
-        console.error('failed to add user : ',error);
+        console.error('failed to get already-exist user : ',error);
+        throw new Error('Database Query Failed')
     }
 
-    const newUser = (
-        await db
-            .insert(users)
-            .values({
-                username,
-                email,
-                role,
-            })
-            .returning()
-    )[0];
-    return newUser;
+    try {
+        const newUser = (
+            await db
+                .insert(users)
+                .values({
+                    username,
+                    email,
+                    role,
+                })
+                .returning()
+        )[0];
+        return newUser;
+    } catch (error) {
+        console.error('Failed to insert user : ', error);
+        throw new Error("User Creation Failed")
+    }
 
 };
 
