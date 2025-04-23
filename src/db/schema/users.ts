@@ -12,7 +12,6 @@ export const users = pgTable("users", {
     ...timestamps
 });
 
-export default users
 
 export const usersRelations = relations(users,({many})=>({
     chats : many(chats),

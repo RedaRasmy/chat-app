@@ -1,9 +1,8 @@
 import { check, pgTable, uuid } from "drizzle-orm/pg-core";
-import users from "./users";
+import {users} from "./users";
 import { timestamps } from "@/utils/timestamps";
 import { relations, sql } from "drizzle-orm";
 import { messages } from "./messages";
-
 
 
 export const chats = pgTable("chats", {

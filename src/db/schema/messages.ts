@@ -2,7 +2,7 @@ import { boolean, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { chats } from "./chats";
 import { createdAt } from "@/utils/timestamps";
 import { relations } from "drizzle-orm";
-import users from "./users";
+import {users} from "./users";
 
 
 
