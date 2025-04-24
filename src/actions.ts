@@ -7,7 +7,7 @@ import { IUser, SUser } from "./db/types";
 
 // MARK: ADD USER
 
-export const addUser = async ({username,email,role}:IUser):Promise<SUser> => {
+export const addUser = async ({username,email}:IUser):Promise<SUser> => {
 
     try {
         const foundUser = await db.query.users.findFirst({
@@ -28,7 +28,6 @@ export const addUser = async ({username,email,role}:IUser):Promise<SUser> => {
                 .values({
                     username,
                     email,
-                    role,
                 })
                 .returning()
         )[0];
@@ -200,11 +199,12 @@ export const addMessage = async ({
 
 // MARK: GET UNSEEN
 
+// this is BS , is should do : (userId , chatsIds) => ...
 export const getUnseenMessages = async (userId:string) => {
     const unseenMessages = await db.query.messages.findMany({
         where : and(
             eq(messages.seen , false),
-            ne(messages.senderId,userId)
+            ne(messages.senderId,userId) 
         )
     })
     return unseenMessages

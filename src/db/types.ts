@@ -1,15 +1,29 @@
-import { getFullChats } from '@/actions'
-import * as s from './schema'
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
+import { Prettify } from "@/lib/utils"
+import * as s from "./zod-schemas"
+import { z } from "zod"
 
-export type SUser = InferSelectModel<typeof s.users>
-export type IUser = InferInsertModel<typeof s.users>
+export type SUser = z.infer<typeof s.selectUserSchema>
+export type IUser = z.infer<typeof s.insertUserSchema>
 
-export type SChat = InferSelectModel<typeof s.chats>
-export type IChat = Omit<InferInsertModel<typeof s.chats>,'participant1'>
-export type FullChat = Exclude<Awaited<ReturnType<typeof getFullChats>>,undefined>[number]
+export type SChat = z.infer<typeof s.selectChatSchema>
+export type IChat = z.infer<typeof s.insertChatSchema>
 
-export type SMessage = InferSelectModel<typeof s.messages>
-export type IMessage = InferInsertModel<typeof s.messages>
+export type SMessage = z.infer<typeof s.selectMessageSchema>
+export type IMessage = z.infer<typeof s.insertMessageSchema>
+
+
+export type Chat = Prettify<Omit<SChat, 'participant1' | 'participant2'> & {
+    friend : SUser
+}>
+
+export type FullChat = {
+    id: SChat['id'];
+    createdAt: Date;
+    updatedAt: Date;
+    participant1: SUser ;
+    participant2: SUser;
+    messages: SMessage[];
+}
+
 
 

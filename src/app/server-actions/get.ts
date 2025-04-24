@@ -1,0 +1,96 @@
+import { db } from "@/db/drizzle"
+import { chats, messages, users } from "@/db/schema"
+import { actionClient } from "@/lib/safe-action"
+import cleanChat from "@/utils/cleanChat"
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
+import { and, eq, inArray, ne, notInArray, or } from "drizzle-orm"
+import { z } from "zod"
+
+// MARK: GET USER
+export const getUser = actionClient
+    // .schema(z.string().email())
+    .action(async () => {
+        const { getUser } = getKindeServerSession()
+        const email = (await getUser()).email
+
+        if (!email) {
+            return
+        }
+        const user = (
+            await db.select().from(users).where(eq(users.email, email))
+        )[0]
+
+        return user
+    })
+
+// MARK: GET CHATS
+export const getChats = actionClient
+    .schema(z.string().min(1))
+    .action(async ({ parsedInput: userId }) => {
+        const fetchedChats = await db.query.chats.findMany({
+            where: or(
+                eq(chats.participant1, userId),
+                eq(chats.participant2, userId)
+            ),
+            with: {
+                participant1: true,
+                participant2: true,
+            },
+        })
+
+        return fetchedChats.map((chat) => cleanChat(chat,userId))
+    })
+
+// MARK: GET MESSAGES
+export const getMessages = actionClient
+    .schema(z.array(z.string().min(1)))
+    .action(async ({ parsedInput: chatsIds }) => {
+        const fetchedMessages = await db.query.messages.findMany({
+            where: inArray(messages.chatId, chatsIds),
+            orderBy: messages.createdAt,
+        })
+
+        return fetchedMessages
+    })
+
+// MARK: GET SUGGESTIONS
+export const getSuggestedUsers = actionClient
+    .schema(
+        z.object({
+            userId: z.string().min(1),
+            friendsIds: z.array(z.string().min(1)),
+        })
+    )
+    .action(async ({ parsedInput }) => {
+        const { userId, friendsIds } = parsedInput
+
+        const suggestedUsers = await db
+            .select()
+            .from(users)
+            .where(and(ne(users.id, userId), notInArray(users.id, friendsIds)))
+            .limit(10)
+
+        return suggestedUsers
+    })
+
+// MARK: GET CHAT
+export const getChat = actionClient
+    .schema(z.object({
+        userId : z.string().min(1),
+        chatId : z.string().min(1)
+    }))
+    .action( async ({parsedInput}) => {
+
+        const {userId,chatId} = parsedInput
+
+        const chatFound = await db.query.chats.findFirst({
+            where: eq(chats.id, chatId),
+            with: {
+                participant1: true,
+                participant2: true,
+            },
+        })
+        if (chatFound) return cleanChat(chatFound , userId)
+    })
+
+
