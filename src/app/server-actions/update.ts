@@ -5,6 +5,7 @@ import { and, eq, ne } from "drizzle-orm"
 import { z } from "zod"
 
 export const seeMessages = actionClient
+    .metadata({actionName: "see-messages"})
     .schema(
         z.object({
             chatId: z.string().min(1),

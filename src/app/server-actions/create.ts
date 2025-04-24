@@ -7,6 +7,7 @@ import { and, eq, or } from "drizzle-orm"
 
 // MARK: CREATE USER
 export const createUser = actionClient
+    .metadata({actionName:"create-user"})
     .schema(insertUserSchema)
     .action(async ({parsedInput}) => {
         const {username,email} = parsedInput
@@ -35,6 +36,7 @@ export const createUser = actionClient
 
 // MARK: CREATE CHAT
 export const createChat = actionClient
+    .metadata({actionName: "create-chat"})
     .schema(insertChatSchema)
     .action(async ({ parsedInput }) => {
         const { participant1, participant2 } = parsedInput
@@ -85,6 +87,7 @@ export const createChat = actionClient
 
 // MARK: CREATE MESSAGE
 export const createMessage = actionClient
+    .metadata({actionName: "create-message"})
     .schema(insertMessageSchema)
     .action(async ({parsedInput}) => {
         const {chatId,content,senderId} = parsedInput

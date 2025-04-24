@@ -9,6 +9,7 @@ import { z } from "zod"
 // MARK: GET USER
 export const getUser = actionClient
     // .schema(z.string().email())
+    .metadata({actionName: "get-user"})
     .action(async () => {
         const { getUser } = getKindeServerSession()
         const email = (await getUser()).email
@@ -25,6 +26,7 @@ export const getUser = actionClient
 
 // MARK: GET CHATS
 export const getChats = actionClient
+    .metadata({actionName : 'get-chats'})
     .schema(z.string().min(1))
     .action(async ({ parsedInput: userId }) => {
         const fetchedChats = await db.query.chats.findMany({
@@ -38,11 +40,12 @@ export const getChats = actionClient
             },
         })
 
-        return fetchedChats.map((chat) => cleanChat(chat,userId))
+        return fetchedChats.map((chat) => cleanChat(chat, userId))
     })
 
 // MARK: GET MESSAGES
 export const getMessages = actionClient
+    .metadata({actionName:'get-messages'})
     .schema(z.array(z.string().min(1)))
     .action(async ({ parsedInput: chatsIds }) => {
         const fetchedMessages = await db.query.messages.findMany({
@@ -55,6 +58,7 @@ export const getMessages = actionClient
 
 // MARK: GET SUGGESTIONS
 export const getSuggestedUsers = actionClient
+    .metadata({actionName: 'get-suggested-users'})
     .schema(
         z.object({
             userId: z.string().min(1),
@@ -75,13 +79,15 @@ export const getSuggestedUsers = actionClient
 
 // MARK: GET CHAT
 export const getChat = actionClient
-    .schema(z.object({
-        userId : z.string().min(1),
-        chatId : z.string().min(1)
-    }))
-    .action( async ({parsedInput}) => {
-
-        const {userId,chatId} = parsedInput
+    .metadata({actionName: "get-chat"})
+    .schema(
+        z.object({
+            userId: z.string().min(1),
+            chatId: z.string().min(1),
+        })
+    )
+    .action(async ({ parsedInput }) => {
+        const { userId, chatId } = parsedInput
 
         const chatFound = await db.query.chats.findFirst({
             where: eq(chats.id, chatId),
@@ -90,7 +96,5 @@ export const getChat = actionClient
                 participant2: true,
             },
         })
-        if (chatFound) return cleanChat(chatFound , userId)
+        if (chatFound) return cleanChat(chatFound, userId)
     })
-
-
