@@ -1,9 +1,10 @@
+'use server'
 import { db } from "@/db/drizzle"
 import { chats, messages, users } from "@/db/schema"
 import { actionClient } from "@/lib/safe-action"
 import cleanChat from "@/utils/cleanChat"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
-import { and, eq, inArray, ne, notInArray, or } from "drizzle-orm"
+import { and, eq, ilike, inArray, ne, notInArray, or } from "drizzle-orm"
 import { z } from "zod"
 
 // MARK: GET USER
@@ -48,6 +49,7 @@ export const getMessages = actionClient
     .metadata({actionName:'get-messages'})
     .schema(z.array(z.string().min(1)))
     .action(async ({ parsedInput: chatsIds }) => {
+
         const fetchedMessages = await db.query.messages.findMany({
             where: inArray(messages.chatId, chatsIds),
             orderBy: messages.createdAt,
@@ -69,10 +71,15 @@ export const getSuggestedUsers = actionClient
         const { userId, friendsIds } = parsedInput
 
         const suggestedUsers = await db
-            .select()
-            .from(users)
-            .where(and(ne(users.id, userId), notInArray(users.id, friendsIds)))
-            .limit(10)
+            .query
+            .users
+            .findMany({
+                where : and(
+                    ne(users.id, userId), 
+                    notInArray(users.id, friendsIds)
+                ) ,
+                limit : 10
+            })
 
         return suggestedUsers
     })
@@ -98,3 +105,31 @@ export const getChat = actionClient
         })
         if (chatFound) return cleanChat(chatFound, userId)
     })
+
+
+
+// MARK: GET USERS BY USERNAME
+
+export const getUsersByUsername = actionClient
+    .metadata({actionName:'get-users-by-username'})
+    .schema(z.object({
+        query : z.string().min(1),
+        userId : z.string().min(1)
+    }))
+    .action(async ({parsedInput}) => {
+        const {userId,query} = parsedInput
+
+        const usersFound = await db
+            .query
+            .users
+            .findMany({
+                where :      
+                    and(
+                        ilike(users.username, query), 
+                        ne(users.id, userId)
+                    )
+            })
+
+        return usersFound;
+    })
+

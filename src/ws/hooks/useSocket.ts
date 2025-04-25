@@ -1,15 +1,6 @@
-import { useEffect, useRef } from "react";
-import { io, ManagerOptions, SocketOptions } from "socket.io-client";
+import { useSocketStore } from "@/zustand/useSocketStore";
 
 
-export function useSocket(opts?:Partial<ManagerOptions & SocketOptions>) {
-    const {current: socket} = useRef(io(opts))
-
-    useEffect(()=>{
-        return ()=>{
-            if (socket) socket.close()
-        }
-    },[socket])
-
-    return socket
+export default function useSocket() {
+    return useSocketStore()
 }

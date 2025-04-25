@@ -1,30 +1,17 @@
 import ChatLabel from "./ChatLabel";
 import { Separator } from "@/components/ui/separator";
 import { NewChatModal } from "./newChatModal";
-import useChatsQuery from "@/hooks/useChatsQuery";
-import { RefreshCcw } from "lucide-react";
-import { getFullChats } from "@/actions";
-import { useChatsStore } from "@/zustand/chatsStore";
-import useUser from "@/hooks/useUser";
+import useChats from "@/hooks/useChats";
 
 export default function Chats() {
-    const chats = useChatsQuery();
-    const setChats = useChatsStore((state) => state.setChats);
-    const { id } = useUser();
-
-    async function refreshChats() {
-        const data = await getFullChats(id);
-        setChats(data);
-    }
-
-    console.log('chats compo rerender : ',chats)
+    const {chats} = useChats()
 
     return (
         <div className="mt-5 flex-1">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="pl-4 text-xl">Chats</h1>
                 <div className="flex items-center gap-2">
-                    <RefreshCcw onClick={refreshChats} size={19} className="cursor-pointer"/>
+                    {/* <RefreshCcw onClick={refreshChats} size={19} className="cursor-pointer"/> */}
                     <NewChatModal />
                 </div>
             </div>

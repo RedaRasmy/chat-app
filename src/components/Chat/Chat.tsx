@@ -1,30 +1,22 @@
-import type { Chat } from "@/app/types/chat.type";
-import ChatHeader from "./ChatHeader";
-import ChatInputs from "./ChatInputs";
-import Messages from "./Messages";
-import { cn } from "@/lib/utils";
-import { getOtherParticipant } from "@/utils/getChatName";
-import useChatRoom from "@/hooks/useChatRoom";
+import { cn } from '@/lib/utils'
+import React from 'react'
+import ChatHeader from './ChatHeader'
+import Messages from './Messages'
+import ChatInputs from './ChatInputs'
+import type { Chat } from '@/db/types'
+import useChat from '@/hooks/useChat'
 
-export default function Chat() {
+export default function Chat({chatId}:{
+    chatId:Chat['id']
+}) {
 
-    const {user,chat} = useChatRoom()
+    const {chat,messages} = useChat(chatId)
 
-    if (chat) return (
-        <div className={cn("gap-5 flex flex-col w-full h-full")}>
-            <>
-                <ChatHeader chatName={getOtherParticipant(chat,user.id).username}/>
-                <Messages messages={chat.messages}/>
-                <ChatInputs/>
-            </> 
-            
-        </div>
-    )
     return (
-        <div className="flex md:flex flex-col bg-zinc-900 w-full text-white h-full  ">
-            <h1 className="flex-1 text-center flex justify-center p-5 items-center text-5xl h-full">
-                Start a Chat!
-            </h1>
+        <div className={cn("gap-5 flex flex-col w-full h-full")}>
+                <ChatHeader chatName={chat.friend.username}/>
+                <Messages messages={messages}/>
+                <ChatInputs/>
         </div>
     )
 }

@@ -1,76 +1,46 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import useSocket from "./useSocket";
-import useChatsMutation from "./useChatsMutation";
-import { getFullChats, getUnseenMessages } from "@/actions";
-import useUser from "./useUser";
-import { useChatsStore } from "@/zustand/chatsStore";
-import { useCurrentChatId } from "./useCurrentChat";
-// import useChatsQuery from "./useChatsQuery";
+import { useEffect} from "react"
+import useUser from "./useUser"
+import useChats from "./useChats"
+import useMessages from "./useMessages"
+import { useSocketEvents } from "@/ws/hooks/useSocketEvents"
 
 export default function useChatApp() {
-    const { socket } = useSocket();
-    const { addReceivedMessage } = useChatsMutation();
-    const addReceivedMessageRef = useRef(addReceivedMessage);
-    const { id } = useUser();
-    const [isLoading, setIsLoading] = useState(false);
-    const chats = useChatsStore((state) => state.chats);
-    const setChats = useChatsStore((state) => state.setChats);
-    const setChatsRef = useRef(setChats);
-    const chatsIds = useMemo(
-        () => chats?.map((chat) => chat.id) ?? [],
-        [chats]
-    );
-    // set chats if undefined
-    const chatId = useCurrentChatId();
+    // should be called only in ChatApp component
+    const user = useUser()
 
-    useEffect(() => {
-        const getUserChats = async () => {
-            try {
-                if (chats === undefined) {
-                    setIsLoading(true);
-                    const data = await getFullChats(id);
-                    setChatsRef.current(data);
-                }
-            } catch (error) {
-                console.error(
-                    "Failed to get chats (from useChatApp) : ",
-                    error
-                );
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        getUserChats();
-    }, [chats, id]);
+    /// Fetch data
 
+    const {fetchAllChats,ids:chatsIds,addOne:addOneChat} = useChats()
+    const {fetchAllMessages,addReceivedOne} = useMessages()
 
-    useEffect(() => {
-        socket.emit("join-chats", chatsIds);
-    }, [socket, chatsIds]);
-
-    useEffect(() => {
-        
-        async function getUnseen() {
-            const unseenMessages = await getUnseenMessages(id);
-            console.log('unsseen messages :',unseenMessages)
-            for (const message of unseenMessages) {
-                addReceivedMessageRef.current(message);
+    useEffect(()=>{
+        async function fetchAll() {
+            const chats = await fetchAllChats()
+            if (chats) {
+                await fetchAllMessages(chats.map(chat=>chat.id))
             }
         }
-        getUnseen();
-    }, [id, chatId]);
+        fetchAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     // Listen for events
 
-    useEffect(() => {
-        console.log("receiving message ? ...(useEffect)");
-        socket.on("receive-message", (message) =>
-            addReceivedMessageRef.current(message, message.chatId === chatId)
-        );
-        return () => {
-            socket.off("receive-message");
-        };
-    }, [socket, chatId]);
+    useSocketEvents([
+        {
+            name : 'message' ,
+            handler : async (message) => {
+                addReceivedOne(message)
+                // check if the message from new chat and fetch it if true
+                if (!chatsIds.includes(message.id) && user) {
+                    await addOneChat({
+                        participant1 : user.id,
+                        participant2 : message.senderId
+                    })
+                }
+                
+            }
+        }
+    ])
 
-    return { isLoading };
 }

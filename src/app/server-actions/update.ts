@@ -1,3 +1,4 @@
+'use server'
 import { db } from "@/db/drizzle"
 import { messages } from "@/db/schema"
 import { actionClient } from "@/lib/safe-action"

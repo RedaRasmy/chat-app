@@ -8,6 +8,7 @@ import { createChat } from "@/app/server-actions/create"
 type ChatsActions = {
     setAll: (chats: Chat[] | Entities<Chat>) => void
     addOne: (chat: IChat) => Promise<Chat | undefined>
+    // addExistingOne : (chatId : Chat['id']) => Promise<void> 
 }
 
 export const useChatsStore = create<EntitiyState<Chat> & ChatsActions>()(
@@ -29,26 +30,21 @@ export const useChatsStore = create<EntitiyState<Chat> & ChatsActions>()(
                 })
             },
             addOne: async ({ participant1, participant2 }) => {
-                try {
-                    const res = await createChat({
-                        participant1,
-                        participant2,
-                    })
-                    // if (!res) return;
-                    const newChat = res?.data
+                const res = await createChat({
+                    participant1,
+                    participant2,
+                })
+                // if (!res) return;
+                const newChat = res?.data
 
-                    if (newChat) {
-                        set((draft) => {
-                            draft.entities[newChat.id] = newChat
-                            draft.ids.unshift(newChat.id)
-                        })
-                        return newChat
-                    }
-                } catch (error) {
-                    console.error("Failed to add new chat : ", error)
-                } finally {
+                if (newChat) {
+                    set((draft) => {
+                        draft.entities[newChat.id] = newChat
+                        draft.ids.unshift(newChat.id)
+                    })
+                    return newChat
                 }
-            },
+            }
         })),
         {
             name: "chats",

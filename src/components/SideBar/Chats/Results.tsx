@@ -6,7 +6,7 @@ export default function Results({ query }: { query: string }) {
     const {results,isLoading,friendsIds} = useResults(query)
     const isSuggest = query === ''
 
-    console.log(friendsIds)
+    console.log('is loadign:',isLoading)
 
     return (
         <div className="">
@@ -18,7 +18,6 @@ export default function Results({ query }: { query: string }) {
                         key={user.id}
                         username={user.username}
                         id={user.id}
-                        role={user.role}
                     />
                 ))
                 : <div className="flex justify-center items-center pt-5">

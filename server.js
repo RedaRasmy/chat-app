@@ -17,26 +17,33 @@ app.prepare().then(() => {
     io.on("connection", (socket) => {
         console.log("connected");
 
-        socket.on("send-see-chat", (chatId) => {
-            socket.to(chatId).emit('receive-see-chat')
+        socket.on('register', (userId) => {
+            socket.join(userId)
+            // room for each user : for multi-device feature
+        })
+
+        socket.on("see", async ({recipientId, chatId}) => {
+            io.to(recipientId).emit('see' , chatId)
         });
+
+        socket.on('delivery' , ({recipientId,chatId}) => {
+            io.to(recipientId).emit('delivery' , chatId )
+        })
     
-        socket.on("join-chats", (chatsIds) => {
-            chatsIds.forEach(chatId=> {
-                socket.join(chatId)
-            })
-        });
-    
-        socket.on("send-message", async (message,callback) => {
-            console.log("Received:", message);
-            socket.to(message.chatId).emit("receive-message", message );
+
+        socket.on("message", async ({recipientId,message},callback) => {
+            io.to(recipientId).emit('message' , message)
             callback({status:'ok'})
         });
-    
-        socket.on("send-typing", async (chatId) => {
-            console.log("typing...");
-            socket.to(chatId).emit('receive-typing',chatId)
+
+        socket.on("typing", async ({recipientId,chatId}) => {
+            io.to(recipientId).emit('typing',chatId)
         });
+
+        
+        // socket.on('disconnect' , () => {
+            
+        // })
     })
 
     httpServer

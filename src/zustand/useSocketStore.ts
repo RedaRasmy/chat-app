@@ -1,29 +1,27 @@
-import { create } from "zustand";
-import { io, Socket } from "socket.io-client";
-import { immer } from "zustand/middleware/immer";
+import { create } from "zustand"
+import { Socket } from "socket.io-client"
+import { immer } from "zustand/middleware/immer"
 
 type SocketStore = {
-    socket: Socket;
-    connect: () => void;
-    disconnect: () => void;
-};
+    socket: Socket | undefined
+    uid: string
+
+    // actions types
+    updateSocket: (socket: Socket) => void
+    updateUid: (uid: string) => void
+}
 
 export const useSocketStore = create<SocketStore>()(
     immer((set) => ({
-        socket: io(),
-        connect: () => {
-            set((draft)=>{
-                if (!draft.socket.connected) {
-                    draft.socket.connect()
-                }
-            });
+        socket: undefined,
+        uid: "",
+
+        // actions
+        updateSocket: (socket) => {
+            set({socket})
         },
-        disconnect: () => {
-            set((draft) => {
-                if (draft.socket.connected) {
-                    draft.socket.disconnect()
-                }
-            });
+        updateUid: (uid) => {
+            set({ uid })
         },
     }))
-);
+)

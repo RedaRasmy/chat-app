@@ -1,3 +1,4 @@
+'use server'
 import { db } from "@/db/drizzle"
 import { chats, messages, users } from "@/db/schema"
 import { insertChatSchema, insertMessageSchema, insertUserSchema } from "@/db/zod-schemas"

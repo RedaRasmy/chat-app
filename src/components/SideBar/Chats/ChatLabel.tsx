@@ -1,39 +1,43 @@
 import MyAvatar from "./MyAvatar";
-import { FullChat } from "@/db/types";
-import { getOtherParticipant } from "@/utils/getChatName";
+import { Chat } from "@/db/types";
 import useUser from "@/hooks/useUser";
 import { useUpdateCurrentChat } from "@/hooks/useCurrentChat";
 import getLastMessageDate from "@/utils/getLastMessageDate";
-import useIsTyping from "@/hooks/useIsTyping";
+import useChat from "@/hooks/useChat";
 
-export default function ChatLabel({ chat }: { chat: FullChat }) {
-    const { id } = useUser();
+export default function ChatLabel({ chat }: {
+    chat : Chat
+}) {
+    const user = useUser();
     const updateCurrentChatId = useUpdateCurrentChat();
 
-    const friend = getOtherParticipant(chat, id);
+    const {isTyping,messages} = useChat(chat.id)
 
-    const lastMessage = !!chat.messages.length ? chat.messages[chat.messages.length - 1] : undefined
+    // const friend = getOtherParticipant(chat, id);
+    const name = chat.friend.username
+
+    const lastMessage = !!messages.length ? messages.at(-1) : undefined
+
     const lastMessageDate = lastMessage && getLastMessageDate(lastMessage.createdAt);
-    const unSeenMessages = chat.messages.filter(
-        (message) => message.senderId !== id && !message.seen
-    ).length;
 
-    const isTyping = useIsTyping(chat.id);
+    const unSeenMessages = user 
+        ? messages.filter(
+            (message) => message.senderId !== user.id && !message.seen
+        ).length
+        : 0
+
 
     return (
         <div
             className="flex items-center justify-between gap-3 cursor-pointer"
             onClick={() => updateCurrentChatId(chat.id)}
         >
-            <MyAvatar name={friend.username} />
+            <MyAvatar name={name} />
 
             <div className="grid grid-rows-2 w-full -space-y-2">
                 <div className="flex items-center justify-between ">
                     <p className="font-semibold flex items-center">
-                        {friend.username}
-                        {friend.role === "admin" && (
-                            <span className="text-yellow-500 text-xs ml-2">(admin)</span>
-                        )}
+                        {name}
                     </p>
                     <p className="text-xs text-nowrap">{lastMessageDate}</p>
                 </div>

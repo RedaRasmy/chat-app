@@ -1,13 +1,15 @@
+import { useSocketStore } from "@/zustand/useSocketStore"
 import { useEffect } from "react"
-import { socket } from "../socket"
+import { Event } from "../events.types";
+// import { socket } from "../socket"
 
-export interface Event {
-    name: string
-    handler(...args: any[]): any
-}
 
 export function useSocketEvents(events: Event[]) {
+    const socket = useSocketStore(state=>state.socket)
+
     useEffect(() => {
+        if (!socket) return;
+
         for (const event of events) {
             socket.on(event.name, event.handler)
         }
@@ -17,5 +19,5 @@ export function useSocketEvents(events: Event[]) {
                 socket.off(event.name)
             }
         }
-    }, [])
+    }, [socket,events])
 }

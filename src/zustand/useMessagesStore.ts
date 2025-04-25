@@ -2,13 +2,13 @@ import { Chat, IMessage, SMessage, SUser } from "@/db/types"
 import { create } from "zustand"
 import { immer } from "zustand/middleware/immer"
 import { persist } from "zustand/middleware"
-import { EntitiyState } from "@/lib/utils"
+import { Entities, EntitiyState } from "@/lib/utils"
 import { createMessage } from "@/app/server-actions/create"
 import { seeMessages } from "@/app/server-actions/update"
 
 type MessagesActions = {
-    addOne: (message: IMessage) => Promise<SMessage | undefined>
-    addReceivedOne: (message: SMessage) => void
+    addOne : (message: IMessage) => Promise<SMessage | undefined>
+    addReceivedOne : (message: SMessage) => void
     see: ({
         userId,
         chatId,
@@ -16,6 +16,8 @@ type MessagesActions = {
         userId: SUser["id"]
         chatId: Chat["id"]
     }) => Promise<void>
+    setAll: (chats: SMessage[] | Entities<SMessage>) => void
+
     // addMany : (messages:IMessage[]) => SMessage[]
     // updateOne : ({messageId:SMessage['id'],changes:Partial<SMessage>})
     // updateMany : ()
@@ -29,20 +31,30 @@ export const useMessagesStore = create<
             entities: {},
             ids: [],
 
+            // actions 
+            setAll: (messages) => {
+                set({
+                    entities: Array.isArray(messages)
+                        ? messages.reduce<Entities<SMessage>>((acc, message) => {
+                                acc[message.id] = message
+                                return acc
+                            }, {})
+                        : messages,
+                    ids: Array.isArray(messages)
+                        ? messages.map((message) => message.id)
+                        : Object.keys(messages),
+                })
+            },
             async addOne(message) {
-                try {
-                    const res = await createMessage(message)
-                    const newMessage = res?.data
+                const res = await createMessage(message)
+                const newMessage = res?.data
 
-                    if (newMessage) {
-                        set((draft) => {
-                            draft.entities[newMessage.id] = newMessage
-                            draft.ids.unshift(newMessage.id)
-                        })
-                        return newMessage
-                    }
-                } catch (error) {
-                    console.error(error)
+                if (newMessage) {
+                    set((draft) => {
+                        draft.entities[newMessage.id] = newMessage
+                        draft.ids.unshift(newMessage.id)
+                    })
+                    return newMessage
                 }
             },
             see: async ({ userId, chatId }) => {

@@ -7,10 +7,10 @@ import {
 } from "./ui/resizable"
 import { useCurrentChatId } from "@/hooks/useCurrentChat"
 import useChatApp from "@/hooks/useChatApp"
-import Chat from "./Chat/Chat"
+import ChatSection from "./Chat/ChatSection"
 
 export default function ChatApp() {
-    const currentChat = useCurrentChatId()
+    const currentChatId = useCurrentChatId()
     useChatApp()
 
     return (
@@ -24,8 +24,8 @@ export default function ChatApp() {
                     minSize={20}
                     maxSize={60}
                     className={cn({
-                        flex: currentChat === undefined,
-                        "hidden md:flex": currentChat !== undefined,
+                        flex: currentChatId === undefined,
+                        "hidden md:flex": currentChatId !== undefined,
                     })}
                 >
                     <Sidebar />
@@ -34,11 +34,11 @@ export default function ChatApp() {
                 <ResizablePanel
                     defaultSize={70}
                     className={cn({
-                        flex: currentChat !== undefined,
-                        "hidden md:flex": currentChat === undefined,
+                        flex: currentChatId !== undefined,
+                        "hidden md:flex": currentChatId === undefined,
                     })}
                 >
-                    <Chat />
+                    <ChatSection/>
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

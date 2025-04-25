@@ -1,12 +1,13 @@
 "use client";
-import Loading from "./loading";
-import useInit from "@/hooks/init/useInit";
 import ChatApp from "@/components/ChatApp";
+import useInitUser from "@/hooks/useInitUser";
+import { useInitSocket } from "@/ws/hooks/useInitSocket";
 
 export default function Home() {
-    const isLoading = useInit();
+    useInitSocket()
+    const { isAuthenticated} = useInitUser()
 
-    if (isLoading) return <Loading />;
+    if (!isAuthenticated ) return <div>loading...</div>
 
     return <ChatApp/>
 }

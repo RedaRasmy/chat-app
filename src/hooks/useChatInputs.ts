@@ -1,48 +1,50 @@
-import { FormEvent, useEffect, useState } from "react";
-import useSocket from "./useSocket";
-import { useCurrentChatId } from "./useCurrentChat";
-import useUser from "./useUser";
-import useChatsMutation from "./useChatsMutation";
+import { FormEvent, useEffect, useState } from "react"
+import useUser from "./useUser"
+import { useSocketEmit } from "@/ws/hooks/useSocketEmit"
+import { Chat } from "@/db/types"
+import useChat from "./useChat"
 
-export default function useChatInputs() {
-    const { socket,  } = useSocket();
-    const [message, setMessage] = useState("");
-    const { id: userId } = useUser();
-    const chatId = useCurrentChatId()
+export default function useChatInputs(chatId:Chat['id']) {
 
-    const { addNewMessage } = useChatsMutation();
+    const [message, setMessage] = useState("")
 
-    useEffect(()=>{
+    const user = useUser()
+
+    const {chat,sendMessage} = useChat(chatId)
+
+    const emit = useSocketEmit()
+    
+    
+    useEffect(() => {
         if (message.length > 0) {
-            console.log('typing')
-            socket.emit('send-typing',chatId)
+            console.log("typing")
+            emit({
+                name : "typing",
+                payload : {
+                    chatId,
+                    recipientId : chat.friend.id
+                }
+            })
         }
-    },[message.length,socket,chatId])
+    }, [chat.friend.id , chatId , emit , message.length])
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setMessage("");
-        if (chatId) {
-            const newMessage = await addNewMessage({
-                chatId,
-                content: message,
-                userId,
-            })
-            if (newMessage) {
-                socket.emit("send-message", newMessage , (response:{status:'ok'|'not ok'})=> {
-                    if (response.status === 'ok') {
-                        // handle success (message sended to server)
-                    } else {
-                        // handle failure (server didnt get the message)
-                    }
-                });
-            }
-        }
+        if (!user) return ;
+
+        e.preventDefault()
+
+        setMessage("")
+
+        sendMessage({
+            chatId,
+            content : message,
+            senderId : user.id
+        })
     }
 
     return {
         handleSubmit,
         setMessage,
-        message
+        message,
     }
 }

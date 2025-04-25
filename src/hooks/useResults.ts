@@ -1,32 +1,43 @@
-import { getSuggestedUsers, getUsersByUsername } from "@/actions";
+// import { getSuggestedUsers, getUsersByUsername } from "@/actions";
 import { useEffect, useMemo, useState } from "react";
 import { SUser } from "@/db/types";
 import useUser from "./useUser";
-import useChatsQuery from "./useChatsQuery";
-import getFreindsIds from "@/utils/getFriendsIds";
+import useChats from "./useChats";
+import { getSuggestedUsers, getUsersByUsername } from "@/app/server-actions/get";
 
 export default function useResults(query: string) {
     const [results, setResults] = useState<SUser[]>([]);
-    const { id } = useUser();
-    const chats = useChatsQuery();
-    const friendsIds = useMemo(() => getFreindsIds(chats, id), [chats, id]);
+    const user = useUser();
+    const {chats} = useChats();
+    const friendsIds = useMemo(() => chats.map(chat=>chat.friend.id), [chats]);
+    // const friendsIds = chats.map(chat=>chat.friend.id)
+
     const [isLoading, setIsLoading] = useState(false);
+    console.log('user:',user)
 
     useEffect(() => {
-        console.log("useResults/useEffect runs");
+        if (!user) return ;
         async function getResults() {
-            setIsLoading(true);
+            if (!user) return ;
             try {
-                if (friendsIds) {
-                    const data =
-                        query === ""
-                            ? await getSuggestedUsers({
-                                userId: id,
-                                friendsIds,
-                            })
-                            : await getUsersByUsername(query);
-                    setResults(data ?? []);
+                setIsLoading(true);
+                const res =
+                    query === ""
+                        ? await getSuggestedUsers({
+                            userId: user.id,
+                            friendsIds,
+                        })
+                        : await getUsersByUsername({
+                            userId : user.id,
+                            query 
+                        });
+                
+                const users = res?.data
+
+                if (users) {
+                    setResults(users)
                 }
+
             } catch (error) {
                 console.error("Failed to get results/suggestions : ", error);
             } finally {
@@ -34,7 +45,7 @@ export default function useResults(query: string) {
             }
         }
         getResults();
-    }, [query, id, friendsIds]);
+    }, [friendsIds,query,user]);
 
     return { results, isLoading, friendsIds };
 }
