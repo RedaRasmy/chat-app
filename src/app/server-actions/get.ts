@@ -3,27 +3,26 @@ import { db } from "@/db/drizzle"
 import { chats, messages, users } from "@/db/schema"
 import { actionClient } from "@/lib/safe-action"
 import cleanChat from "@/utils/cleanChat"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 import { and, eq, ilike, inArray, ne, notInArray, or } from "drizzle-orm"
 import { z } from "zod"
 
 // MARK: GET USER
-export const getUser = actionClient
-    // .schema(z.string().email())
-    .metadata({actionName: "get-user"})
-    .action(async () => {
-        const { getUser } = getKindeServerSession()
-        const email = (await getUser()).email
+// export const getUser = actionClient
+//     // .schema(z.string().email())
+//     .metadata({actionName: "get-user"})
+//     .action(async () => {
+//         const { getUser } = getKindeServerSession()
+//         const email = (await getUser()).email
 
-        if (!email) {
-            return
-        }
-        const user = (
-            await db.select().from(users).where(eq(users.email, email))
-        )[0]
+//         if (!email) {
+//             return
+//         }
+//         const user = (
+//             await db.select().from(users).where(eq(users.email, email))
+//         )[0]
 
-        return user
-    })
+//         return user
+//     })
 
 // MARK: GET CHATS
 export const getChats = actionClient
