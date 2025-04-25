@@ -2,7 +2,7 @@ import { IChat, Chat } from "@/db/types"
 import { create } from "zustand"
 import { immer } from "zustand/middleware/immer"
 import { persist } from "zustand/middleware"
-import { Entities, EntitiyState } from "@/lib/utils"
+import { Entities, EntitiyState } from "@/lib/utility-types"
 import { createChat } from "@/app/server-actions/create"
 
 type ChatsActions = {

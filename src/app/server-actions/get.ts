@@ -1,28 +1,33 @@
 'use server'
 import { db } from "@/db/drizzle"
 import { chats, messages, users } from "@/db/schema"
+import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
 import cleanChat from "@/utils/cleanChat"
 import { and, eq, ilike, inArray, ne, notInArray, or } from "drizzle-orm"
+import { headers } from "next/headers"
 import { z } from "zod"
 
 // MARK: GET USER
-// export const getUser = actionClient
-//     // .schema(z.string().email())
-//     .metadata({actionName: "get-user"})
-//     .action(async () => {
-//         const { getUser } = getKindeServerSession()
-//         const email = (await getUser()).email
+export const getUser = actionClient
+    // .schema(z.string().email())
+    .metadata({actionName: "get-user"})
+    .action(async () => {
+        const session = await auth.api.getSession({
+            headers : await headers()
+        })
 
-//         if (!email) {
-//             return
-//         }
-//         const user = (
-//             await db.select().from(users).where(eq(users.email, email))
-//         )[0]
+        const email = session?.user.email
 
-//         return user
-//     })
+        if (!email) {
+            return
+        }
+        const user = (
+            await db.select().from(users).where(eq(users.email, email))
+        )[0]
+
+        return user
+    })
 
 // MARK: GET CHATS
 export const getChats = actionClient

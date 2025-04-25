@@ -34,7 +34,6 @@ export interface TypingPayload {
     chatId : Id
 }
 
-
 // Emitters
 
 export type MessageEmitterParams = {name:'message',payload:MessagePayload}
@@ -50,14 +49,3 @@ export type EventEmitterParams =
     | TypingEmitterParams 
     | RegisterEmitterParams
 
-
-
-
-
-// export type Payload<N extends Event['name']> = N extends 'message'    
-//     ? MessagePayload
-//     : N extends 'see' 
-//         ? SeePayload 
-//         : N extends 'typing' 
-//             ? TypingPayload
-//             : never

@@ -17,7 +17,7 @@ app.prepare().then(() => {
     io.on("connection", (socket) => {
         console.log("connected");
 
-        socket.on('register', (userId) => {
+        socket.on('register', ({userId}) => {
             socket.join(userId)
             // room for each user : for multi-device feature
         })
