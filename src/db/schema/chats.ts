@@ -1,14 +1,14 @@
-import { check, pgTable, uuid } from "drizzle-orm/pg-core";
-import {users} from "./users";
+import { check, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { timestamps } from "@/utils/timestamps";
 import { relations, sql } from "drizzle-orm";
 import { messages } from "./messages";
+import { user } from "./auth-schema";
 
 
 export const chats = pgTable("chats", {
     id : uuid().primaryKey().defaultRandom() ,
-    participant1 : uuid().references(()=>users.id).notNull(),
-    participant2 : uuid().references(()=>users.id).notNull(),
+    participant1 : text().references(()=>user.id).notNull(),
+    participant2 : text().references(()=>user.id).notNull(),
     ...timestamps,
 },  (table) => [
     check('distinct_participants', sql`${table.participant1} <> ${table.participant2}`),
@@ -17,12 +17,12 @@ export const chats = pgTable("chats", {
 
 export const chatsRelations = relations(chats,({many,one})=>({
     messages : many(messages),
-    participant1 : one(users,{
+    participant1 : one(user,{
         fields: [chats.participant1],
-        references: [users.id]
+        references: [user.id]
     }),
-    participant2 : one(users,{
+    participant2 : one(user,{
         fields: [chats.participant2],
-        references: [users.id]
+        references: [user.id]
     })
 }))

@@ -1,14 +1,27 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
-import {users,messages,chats} from './schema'
+import {user,messages,chats} from './schema'
+import { z } from "zod"
 
 // users
 
-export const insertUserSchema = createInsertSchema(users).omit({
-    createdAt : true,
-    updatedAt : true,
-    id: true,
+// export const insertUserSchema = createInsertSchema(user).omit({
+//     createdAt : true,
+//     updatedAt : true,
+//     id: true,
+// })
+
+export const signupSchema = z.object({
+    username : z.string().min(3).max(30),
+    email : z.string().email() ,
+    password : z.string().min(8).max(100)
 })
-export const selectUserSchema = createSelectSchema(users)
+
+export const loginSchema = z.object({
+    username : z.string().min(3).max(30),
+    password : z.string().min(8).max(100)
+})
+
+export const selectUserSchema = createSelectSchema(user)
 
 // messages 
 

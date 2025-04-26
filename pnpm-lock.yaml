@@ -54,11 +54,11 @@ importers:
         specifier: ^16.4.7
         version: 16.4.7
       drizzle-orm:
-        specifier: ^0.40.0
-        version: 0.40.0(gel@2.0.0)(kysely@0.27.6)
+        specifier: ^0.43.1
+        version: 0.43.1(gel@2.0.0)(kysely@0.27.6)
       drizzle-zod:
         specifier: ^0.7.1
-        version: 0.7.1(drizzle-orm@0.40.0(gel@2.0.0)(kysely@0.27.6))(zod@3.24.2)
+        version: 0.7.1(drizzle-orm@0.43.1(gel@2.0.0)(kysely@0.27.6))(zod@3.24.2)
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -1496,8 +1496,8 @@ packages:
     resolution: {integrity: sha512-l6dMSE100u7sDaTbLczibrQZjA35jLsHNqIV+jmhNVO3O8jzM6kywMOmV9uOz9ZVSCMPQhAZEFjL/qDPVrqpUA==}
     hasBin: true
 
-  drizzle-orm@0.40.0:
-    resolution: {integrity: sha512-7ptk/HQiMSrEZHnAsSlBESXWj52VwgMmyTEfoNmpNN2ZXpcz13LwHfXTIghsAEud7Z5UJhDOp8U07ujcqme7wg==}
+  drizzle-orm@0.43.1:
+    resolution: {integrity: sha512-dUcDaZtE/zN4RV/xqGrVSMpnEczxd5cIaoDeor7Zst9wOe/HzC/7eAaulywWGYXdDEc9oBPMjayVEDg0ziTLJA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -1507,7 +1507,7 @@ packages:
       '@neondatabase/serverless': '>=0.10.0'
       '@op-engineering/op-sqlite': '>=2'
       '@opentelemetry/api': ^1.4.1
-      '@planetscale/database': '>=1'
+      '@planetscale/database': '>=1.13'
       '@prisma/client': '*'
       '@tidbcloud/serverless': '*'
       '@types/better-sqlite3': '*'
@@ -4089,14 +4089,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.40.0(gel@2.0.0)(kysely@0.27.6):
+  drizzle-orm@0.43.1(gel@2.0.0)(kysely@0.27.6):
     optionalDependencies:
       gel: 2.0.0
       kysely: 0.27.6
 
-  drizzle-zod@0.7.1(drizzle-orm@0.40.0(gel@2.0.0)(kysely@0.27.6))(zod@3.24.2):
+  drizzle-zod@0.7.1(drizzle-orm@0.43.1(gel@2.0.0)(kysely@0.27.6))(zod@3.24.2):
     dependencies:
-      drizzle-orm: 0.40.0(gel@2.0.0)(kysely@0.27.6)
+      drizzle-orm: 0.43.1(gel@2.0.0)(kysely@0.27.6)
       zod: 3.24.2
 
   dunder-proto@1.0.1:

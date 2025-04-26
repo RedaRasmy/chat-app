@@ -1,77 +1,14 @@
 'use server'
 import { db } from "@/db/drizzle"
-import { chats, messages, users } from "@/db/schema"
-import { insertChatSchema, insertMessageSchema, insertUserSchema } from "@/db/zod-schemas"
-import { auth } from "@/lib/auth"
+import { chats, messages, user } from "@/db/schema"
+import { insertChatSchema, insertMessageSchema } from "@/db/zod-schemas"
+// import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
 import cleanChat from "@/utils/cleanChat"
 import { and, eq, or } from "drizzle-orm"
-import { headers } from "next/headers"
+// import { headers } from "next/headers"
 
-// MARK: CREATE USER
-export const createUser = actionClient
-    .metadata({actionName:"create-user"})
-    .schema(insertUserSchema)
-    .action(async ({parsedInput}) => {
-        const {username,email} = parsedInput
 
-        const foundUser = await db.query.users.findFirst({
-            where: eq(users.email, email),
-        });
-
-        if (foundUser) {
-            return foundUser;
-        }
-
-        const newUser = (
-            await db
-                .insert(users)
-                .values({
-                    username,
-                    email,
-                })
-                .returning()
-        )[0];
-
-        return newUser;
-    })
-
-// MARK: CREATE USER V2
-export const createUserV2 = actionClient
-    .metadata({actionName:"create-user-v2"})
-    .action(async ({}) => {
-
-        const session = await auth.api.getSession({
-            headers : await headers()
-        })
-        
-        if (!session) {
-            return 'Not authenticated'
-        }
-
-        const username = session.user.name
-        const email = session.user.email
-
-        const foundUser = await db.query.users.findFirst({
-            where: eq(users.email, email),
-        });
-
-        if (foundUser) {
-            return foundUser;
-        }
-
-        const newUser = (
-            await db
-                .insert(users)
-                .values({
-                    username,
-                    email,
-                })
-                .returning()
-        )[0];
-
-        return newUser;
-    })
 
 
 // MARK: CREATE CHAT
@@ -110,8 +47,8 @@ export const createChat = actionClient
                 .returning()
         )[0]
 
-        const friend = await db.query.users.findFirst({
-            where : eq(users.id , participant2)
+        const friend = await db.query.user.findFirst({
+            where : eq(user.id , participant2)
         })
 
         if (friend) {

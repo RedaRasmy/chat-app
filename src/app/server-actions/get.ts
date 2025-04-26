@@ -1,6 +1,6 @@
 'use server'
 import { db } from "@/db/drizzle"
-import { chats, messages, users } from "@/db/schema"
+import { chats, messages, user } from "@/db/schema"
 import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
 import cleanChat from "@/utils/cleanChat"
@@ -22,11 +22,11 @@ export const getUser = actionClient
         if (!email) {
             return
         }
-        const user = (
-            await db.select().from(users).where(eq(users.email, email))
+        const foundUser = (
+            await db.select().from(user).where(eq(user.email, email))
         )[0]
 
-        return user
+        return foundUser
     })
 
 // MARK: GET CHATS
@@ -76,11 +76,11 @@ export const getSuggestedUsers = actionClient
 
         const suggestedUsers = await db
             .query
-            .users
+            .user
             .findMany({
                 where : and(
-                    ne(users.id, userId), 
-                    notInArray(users.id, friendsIds)
+                    ne(user.id, userId), 
+                    notInArray(user.id, friendsIds)
                 ) ,
                 limit : 10
             })
@@ -125,12 +125,12 @@ export const getUsersByUsername = actionClient
 
         const usersFound = await db
             .query
-            .users
+            .user
             .findMany({
                 where :      
                     and(
-                        ilike(users.username, query), 
-                        ne(users.id, userId)
+                        ilike(user.username, query), 
+                        ne(user.id, userId)
                     )
             })
 

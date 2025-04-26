@@ -27,7 +27,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.40.0",
+    "drizzle-orm": "^0.43.1",
     "drizzle-zod": "^0.7.1",
     "immer": "^10.1.1",
     "lucide-react": "^0.475.0",
