@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss"
-import daisyui from "daisyui"
 import ta from "tailwindcss-animate" 
 
 export default {
@@ -72,5 +71,5 @@ export default {
             },
         },
     },
-    plugins: [daisyui,ta ],
+    plugins: [ta ],
 } satisfies Config
