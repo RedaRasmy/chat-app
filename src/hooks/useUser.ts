@@ -1,7 +1,9 @@
-import { useUserStore } from "@/zustand/useUserStore"
+import { useSession } from "@/lib/auth-client"
+
 
 export default function useUser() {
-    const user = useUserStore((state) => state.user )
+    const {data} = useSession()
     
-    return user
+    return data?.user
 }
+

@@ -21,8 +21,9 @@ export const loginSchema = z.object({
     password : z.string().min(8).max(100)
 })
 
-export const selectUserSchema = createSelectSchema(user)
-
+export const selectUserSchema = createSelectSchema(user).extend({
+    username : z.string().min(3).max(30)
+})
 // messages 
 
 export const insertMessageSchema = createInsertSchema(messages).omit({

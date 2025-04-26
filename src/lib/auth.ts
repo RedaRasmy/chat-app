@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db/drizzle";
 import { nextCookies } from "better-auth/next-js"
 import { username } from "better-auth/plugins"
+import { account, session, user, verification } from "@/db/schema";
 
 
 export const auth = betterAuth({
@@ -10,6 +11,10 @@ export const auth = betterAuth({
         provider: "pg",
         schema : {
             /// put auth tables here
+            user,
+            session,
+            account,
+            verification
         }
     }),
     emailAndPassword: {
@@ -27,7 +32,8 @@ export const auth = betterAuth({
     session : {
         cookieCache : {
             enabled : true,
-            maxAge : 5 * 60
+            maxAge : 60 * 5
+            // maxAge : 60 * 60 * 24
         }
     }
 })

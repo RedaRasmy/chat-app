@@ -1,14 +1,15 @@
 
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs"
+import { Button } from "@/components/ui/button"
+import { signOut } from "@/lib/auth-client"
 import { LogOut } from "lucide-react"
 
 export default function LogoutButton() {
     return (
-        <LogoutLink>
-            <button className="flex items-center gap-2 m-2">
-                <LogOut/>
-                Logout
-            </button>
-        </LogoutLink>
+        <Button 
+            onClick={async ()=>{await signOut()}}
+            className="flex items-center cursor-pointer justify-center gap-2 m-2 w-fit" variant={'ghost'} >
+            <LogOut/>
+            Logout
+        </Button>
     )
 }
