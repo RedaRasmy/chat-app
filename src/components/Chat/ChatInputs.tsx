@@ -16,7 +16,7 @@ export default function ChatInputs() {
                 onChange={(e) => setMessage(e.target.value)}
                 type="text"
                 placeholder="Write a message..."
-                className="input focus:bg-gray-400 !text-black input- input-ghost w-full max-w-md"
+                className="input focus:bg-gray-400 text-black! input- input-ghost w-full max-w-md"
             />
             <Button
                 className="disabled:opacity-50 rounded-full bg-gray-400 "
