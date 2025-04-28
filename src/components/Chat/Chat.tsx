@@ -13,7 +13,7 @@ export default function Chat({chatId}:{
     const {chat,messages,seeChat} = useChat(chatId)
 
     useEffect(()=>{
-        async function handleSeeChat() {\
+        async function handleSeeChat() {
             if (messages.length>0) {
                 await seeChat()
             }
