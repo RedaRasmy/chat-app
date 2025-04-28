@@ -1,9 +1,8 @@
-import { useSession } from "@/lib/auth-client"
-
+import { useSession } from "@/lib/auth-client";
+import { useMemo } from "react";
 
 export default function useUser() {
-    const {data} = useSession()
-    
-    return data?.user
-}
+    const { data } = useSession();
 
+    return useMemo(() => data?.user, [data?.user]); // ✅ Keeps reference stable
+}
