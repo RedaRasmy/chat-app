@@ -7,7 +7,7 @@ import getMessageDate from "@/utils/getMessageDate";
 import TypingActivity from "./TypingActivity";
 
 export default function Messages({ messages }: { messages: SMessage[] }) {
-    const {id} = useUser()
+    const user = useUser()
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -16,14 +16,14 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
 
 
     return (
-        <div className="w-full flex overflow-y-scroll flex-col px-4 flex-1 ">
+        <div className="w-full flex overflow-y-auto flex-col px-4 flex-1 ">
             <div className="flex-1 ">
                 {messages.map((message) => (
                     <ChatBubble
                         author={message.senderId}
                         key={message.id}
                         content={message.content}
-                        isUserMessage={message.senderId === id}
+                        isUserMessage={message.senderId === user?.id}
                         time={getMessageDate(message.createdAt)}
                     />
                 ))}

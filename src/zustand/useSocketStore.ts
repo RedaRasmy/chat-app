@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { Socket } from "socket.io-client"
+import { io, Socket } from "socket.io-client"
 import { immer } from "zustand/middleware/immer"
 
 type SocketStore = {
@@ -11,9 +11,11 @@ type SocketStore = {
     updateUid: (uid: string) => void
 }
 
+const socket = io()
+
 export const useSocketStore = create<SocketStore>()(
     immer((set) => ({
-        socket: undefined,
+        socket,
         uid: "",
 
         // actions

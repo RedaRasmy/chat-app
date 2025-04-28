@@ -35,7 +35,6 @@ export function SignupForm() {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         execute(values)
-        console.log(values)
     }
 
     // const usernameErrors = result.validationErrors?.username?._errors

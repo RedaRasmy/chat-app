@@ -1,11 +1,12 @@
-import { useSocketStore } from "@/zustand/useSocketStore"
 import { useEffect } from "react"
 import { Event } from "../events.types";
+import useSocket from "./useSocket";
 // import { socket } from "../socket"
 
 
 export function useSocketEvents(events: Event[]) {
-    const socket = useSocketStore(state=>state.socket)
+    const {socket} = useSocket()
+
 
     useEffect(() => {
         if (!socket) return;

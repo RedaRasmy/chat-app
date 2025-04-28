@@ -11,7 +11,7 @@ export default function UserLabel() {
     // const user = useUser()
 
     const user = data?.user
-    console.log('session data in userLabel:',data)
+    
     return (
         <div className="flex items-center gap-2 p-2 mb-2 cursor-pointer">
             <Avatar >

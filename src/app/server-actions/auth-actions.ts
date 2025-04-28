@@ -30,14 +30,12 @@ export const loginUsername = actionClient
     .action(async ({parsedInput}) => {
         const {username,password} = parsedInput
 
-        const res = await auth.api.signInUsername({
+        await auth.api.signInUsername({
             body : {
                 username,
                 password
             }
         })
-
-        console.log(res)
 
         redirect('/')
     })

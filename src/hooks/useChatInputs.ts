@@ -17,7 +17,6 @@ export default function useChatInputs(chatId:Chat['id']) {
     
     useEffect(() => {
         if (message.length > 0) {
-            console.log("typing")
             emit({
                 name : "typing",
                 payload : {

@@ -8,7 +8,7 @@ import { createChat } from "@/app/server-actions/create"
 type ChatsActions = {
     setAll: (chats: Chat[] | Entities<Chat>) => void
     addOne: (chat: IChat) => Promise<Chat | undefined>
-    // addExistingOne : (chatId : Chat['id']) => Promise<void> 
+    // addExistingOne : (chatId : Chat['id']) => Promise<void>
 }
 
 export const useChatsStore = create<EntitiyState<Chat> & ChatsActions>()(
@@ -36,15 +36,14 @@ export const useChatsStore = create<EntitiyState<Chat> & ChatsActions>()(
                 })
                 // if (!res) return;
                 const newChat = res?.data
-
                 if (newChat) {
                     set((draft) => {
-                        draft.entities[newChat.id] = newChat
+                        draft.entities[newChat.id] = newChat as Chat
                         draft.ids.unshift(newChat.id)
                     })
-                    return newChat
+                    return newChat as Chat
                 }
-            }
+            },
         })),
         {
             name: "chats",

@@ -15,7 +15,6 @@ app.prepare().then(() => {
     const io = new Server(httpServer)
 
     io.on("connection", (socket) => {
-        console.log("connected");
 
         socket.on('register', ({userId}) => {
             socket.join(userId)
@@ -30,10 +29,11 @@ app.prepare().then(() => {
             io.to(recipientId).emit('delivery' , chatId )
         })
     
-
-        socket.on("message", async ({recipientId,message},callback) => {
+        socket.on("message", async ({recipientId,message}) => {
+            // console.log('received message:',message)
+            // console.log('to :',recipientId)
             io.to(recipientId).emit('message' , message)
-            callback({status:'ok'})
+            // callback({status:'ok'})
         });
 
         socket.on("typing", async ({recipientId,chatId}) => {
@@ -41,9 +41,9 @@ app.prepare().then(() => {
         });
 
         
-        // socket.on('disconnect' , () => {
-            
-        // })
+        socket.on("disconnect", () => {
+            // console.log(`User ${socket.id} disconnected`);
+        });
     })
 
     httpServer

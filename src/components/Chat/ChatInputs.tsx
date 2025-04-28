@@ -3,8 +3,8 @@ import { SendHorizonal } from "lucide-react";
 import { Button } from "../ui/button";
 import useChatInputs from "@/hooks/useChatInputs";
 
-export default function ChatInputs() {
-    const {handleSubmit,setMessage,message} = useChatInputs()
+export default function ChatInputs({chatId}:{chatId:string}) {
+    const {handleSubmit,setMessage,message} = useChatInputs(chatId)
 
     return (
         <form

@@ -34,7 +34,7 @@ export default function ChatLabel({ chat }: {
         >
             <MyAvatar name={name} />
 
-            <div className="grid grid-rows-2 w-full -space-y-2">
+            <div className="grid grid-rows-2 w-full -space-y-1">
                 <div className="flex items-center justify-between ">
                     <p className="font-semibold flex items-center">
                         {name}
@@ -50,7 +50,7 @@ export default function ChatLabel({ chat }: {
                         )}
                     </p>
                     {!!unSeenMessages && (
-                        <p className="ml-auto size-4 text-xs text-center rounded-full badge-accent">
+                        <p className="ml-auto  size-4 text-xs text-center rounded-full  badge badge-accent">
                             {unSeenMessages}
                         </p>
                     )}

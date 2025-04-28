@@ -6,7 +6,6 @@ export default function Results({ query }: { query: string }) {
     const {results,isLoading,friendsIds} = useResults(query)
     const isSuggest = query === ''
 
-    console.log('is loadign:',isLoading)
 
     return (
         <div className="">

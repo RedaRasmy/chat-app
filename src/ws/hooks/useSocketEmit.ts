@@ -10,7 +10,6 @@ export function useSocketEmit() {
             console.warn("Socket is not initialized");
             return;
         }
-
         socket.emit(name, payload);
     };
 
