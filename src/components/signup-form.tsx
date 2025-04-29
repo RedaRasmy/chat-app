@@ -17,11 +17,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { signupSchema } from "@/db/zod-schemas"
 import Link from "next/link"
-import { useAction } from "next-safe-action/hooks";
-import {signUpEmail} from '@/app/server-actions/auth-actions'
+import { useAction } from "next-safe-action/hooks"
+import { signUpEmail } from "@/app/server-actions/auth-actions"
 
 export function SignupForm() {
-
     const form = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
         defaultValues: {
@@ -29,7 +28,7 @@ export function SignupForm() {
         },
     })
 
-    const { execute, result ,isPending } = useAction(signUpEmail);
+    const { execute, result, isPending } = useAction(signUpEmail)
 
     function onSubmit(values: z.infer<typeof signupSchema>) {
         // Do something with the form values.
@@ -48,24 +47,23 @@ export function SignupForm() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6 border py-5 px-5 rounded-md w-[clamp(300px,50%,350px)]"
             >
-                <h1 className="font-semibold">
-                    Sing up for an account
-                    <p>{result.validationErrors?._errors}</p>
-                </h1>
+                <div>
+                    <h1 className="font-semibold">Sing up for an account</h1>
+                    <p className="text-red-500">{result.serverError}</p>
+                </div>
                 <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>username</FormLabel>
+                            <FormLabel>Username</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="username..."
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                            </FormDescription>
+                            <FormDescription></FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -75,15 +73,14 @@ export function SignupForm() {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>username</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="name@example.com"
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                            </FormDescription>
+                            <FormDescription></FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -97,28 +94,31 @@ export function SignupForm() {
                             <FormControl>
                                 <Input
                                     placeholder="password..."
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                            </FormDescription>
+                            <FormDescription></FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button 
-                    className="w-full" 
+                <Button
+                    className="w-full"
                     type="submit"
                     disabled={isPending}
-                    >
-                        Sign up
-                    </Button>
+                >
+                    Sign up
+                </Button>
                 <div className="text-center -mt-4">
                     <p>
-                        Already have an account? 
-                        {' '}
-                        <Link className="underline" href={'/login'}>Login</Link>
+                        Already have an account?{" "}
+                        <Link
+                            className="underline"
+                            href={"/login"}
+                        >
+                            Login
+                        </Link>
                     </p>
                 </div>
             </form>

@@ -21,7 +21,6 @@ import { useAction } from "next-safe-action/hooks"
 import { loginUsername } from "@/app/server-actions/auth-actions"
 
 export function LoginForm() {
-
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -29,7 +28,7 @@ export function LoginForm() {
         },
     })
 
-    const {execute , isPending } = useAction(loginUsername)
+    const { execute, isPending, result , } = useAction(loginUsername)
 
     function onSubmit(values: z.infer<typeof loginSchema>) {
         // Do something with the form values.
@@ -43,23 +42,23 @@ export function LoginForm() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 border py-5 px-5 rounded-md w-[clamp(300px,50%,350px)]"
             >
-                <h1 className="font-semibold">
-                    Login to your account
-                </h1>
+                <div>
+                    <h1 className="font-semibold">Login to your account</h1>
+                    <p className="text-red-700 -mb-3">{result.serverError}</p>
+                </div>
                 <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>username</FormLabel>
+                            <FormLabel>Username</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="username..."
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                            </FormDescription>
+                            <FormDescription></FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -73,21 +72,31 @@ export function LoginForm() {
                             <FormControl>
                                 <Input
                                     placeholder="password..."
-                                    autoComplete='off'
+                                    autoComplete="off"
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                            </FormDescription>
+                            <FormDescription></FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button disabled={isPending} className="w-full" type="submit">Login</Button>
+                <Button
+                    disabled={isPending}
+                    className="w-full"
+                    type="submit"
+                >
+                    Login
+                </Button>
                 <div className="text-center -mt-5">
                     <p>
-                        Don&apos;t have an account? 
-                        {' '}<Link className="underline" href={'/signup'}>Sign up</Link>
+                        Don&apos;t have an account?{" "}
+                        <Link
+                            className="underline"
+                            href={"/signup"}
+                        >
+                            Sign up
+                        </Link>
                     </p>
                 </div>
             </form>
