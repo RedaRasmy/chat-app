@@ -73,6 +73,7 @@ export function LoginForm() {
                             <FormControl>
                                 <Input
                                     placeholder="password..."
+                                    autoComplete='off'
                                     {...field}
                                 />
                             </FormControl>
@@ -85,7 +86,7 @@ export function LoginForm() {
                 <Button disabled={isPending} className="w-full" type="submit">Login</Button>
                 <div className="text-center -mt-5">
                     <p>
-                        Dont have an account? 
+                        Don&apos;t have an account? 
                         {' '}<Link className="underline" href={'/signup'}>Sign up</Link>
                     </p>
                 </div>

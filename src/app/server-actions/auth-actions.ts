@@ -3,6 +3,7 @@
 import { loginSchema ,signupSchema } from "@/db/zod-schemas"
 import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 export const signUpEmail = actionClient
@@ -38,4 +39,16 @@ export const loginUsername = actionClient
         })
 
         redirect('/')
+    })
+
+
+export const logout = actionClient
+    .metadata({actionName:'logout'})
+    .action(async () => {
+
+        await auth.api.signOut({
+            headers : await headers()
+        })
+
+        redirect('/login')
     })
