@@ -8,7 +8,6 @@ import resend from "./resend";
 import { env } from "../../env";
 import VerifyEmail from "@/emails/verify-email";
 
-
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: "pg",

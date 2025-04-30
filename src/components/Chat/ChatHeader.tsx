@@ -1,19 +1,21 @@
 import {  useUpdateCurrentChat } from "@/hooks/useCurrentChat";
-import { EllipsisVertical, MoveLeft } from "lucide-react";
+import { 
+    ArrowLeft,
+} from "lucide-react";
 
 export default function ChatHeader({ chatName }: { chatName: string }) {
     const updateCurrentChat = useUpdateCurrentChat()
 
     return (
-        <div className="bg-gray-500 min-h-10 text-black justify-between flex items-center px-4">
+        <div className="bg-accent min-h-10 text-black justify-between flex items-center px-4">
             <div className="flex items-center gap-4">
-                <MoveLeft
+                <ArrowLeft
                     onClick={() => updateCurrentChat(undefined)}
                     className="cursor-pointer"
+                    color="gray"
                 />
-                <h1>{chatName ?? "chatroom"}</h1>
+                <h1>{chatName}</h1>
             </div>
-            <EllipsisVertical />
         </div>
     );
 }
