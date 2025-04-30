@@ -3,7 +3,7 @@ import { Chat } from '@/db/types'
 import { useMessagesStore } from '@/zustand/useMessagesStore'
 
 export default function useMessages() {
-    const {setAll,addReceivedOne} = useMessagesStore(state=>state)
+    const {setAll,addReceivedOne,friendSee} = useMessagesStore(state=>state)
 
     async function fetchAllMessages(chatsIds:Chat['id'][]) {
         const res = await getMessages(chatsIds)
@@ -18,6 +18,7 @@ export default function useMessages() {
 
     return {
         fetchAllMessages,
-        addReceivedOne
+        addReceivedOne,
+        friendSee
     }
 }

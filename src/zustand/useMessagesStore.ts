@@ -16,6 +16,13 @@ type MessagesActions = {
         userId: SUser["id"]
         chatId: Chat["id"]
     }) => Promise<void>
+    friendSee : ({
+        userId,
+        chatId
+    }:{
+        userId : SUser['id']
+        chatId : Chat['id']
+    }) => void
     setAll: (chats: SMessage[] | Entities<SMessage>) => void
 
     // addMany : (messages:IMessage[]) => SMessage[]
@@ -78,6 +85,15 @@ export const useMessagesStore = create<
                     draft.ids.unshift(message.id)
                 })
             },
+            friendSee : ({userId, chatId}) => {
+                set(draft=>{
+                    Object.values(draft.entities).forEach(message=>{
+                        if (message.senderId === userId && message.chatId === chatId) {
+                            message.seen = true
+                        }
+                    })
+                })
+            }
         })),
         {
             name: "messages",

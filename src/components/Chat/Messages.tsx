@@ -2,12 +2,9 @@
 import ChatBubble from "./ChatBubble";
 import { SMessage } from "@/db/types";
 import { useEffect, useRef, } from "react";
-import useUser from "@/hooks/useUser";
-import getMessageDate from "@/utils/getMessageDate";
 import TypingActivity from "./TypingActivity";
 
 export default function Messages({ messages }: { messages: SMessage[] }) {
-    const user = useUser()
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -20,11 +17,9 @@ export default function Messages({ messages }: { messages: SMessage[] }) {
             <div className="flex-1 ">
                 {messages.map((message) => (
                     <ChatBubble
-                        author={message.senderId}
                         key={message.id}
-                        content={message.content}
-                        isUserMessage={message.senderId === user?.id}
-                        time={getMessageDate(message.createdAt)}
+                        isPending={false}
+                        message={message}
                     />
                 ))}
             </div>

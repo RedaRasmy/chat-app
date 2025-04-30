@@ -1,9 +1,9 @@
 import { useEffect} from "react"
-import useUser from "./useUser"
 import useChats from "./useChats"
 import useMessages from "./useMessages"
 import { useSocketEvents } from "@/ws/hooks/useSocketEvents"
 import { useSocketEmit } from "@/ws/hooks/useSocketEmit"
+import useUser from "./useUser"
 // import { useCurrentChatId } from "./useCurrentChat"
 
 export default function useChatApp() {
@@ -27,7 +27,7 @@ export default function useChatApp() {
     /// Fetch data
 
     const {fetchAllChats,ids:chatsIds,addOne:addOneChat} = useChats()
-    const {fetchAllMessages,addReceivedOne} = useMessages()
+    const {fetchAllMessages,addReceivedOne,friendSee} = useMessages()
 
     useEffect(()=>{
         async function fetchAll() {
@@ -57,6 +57,15 @@ export default function useChatApp() {
                     })
                 }
                 
+            }
+        },
+        {
+            name : 'see' ,
+            handler : (chatId) => {
+                if (user) friendSee({
+                    userId : user.id , 
+                    chatId
+                })
             }
         }
     ])

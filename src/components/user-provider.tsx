@@ -1,8 +1,9 @@
+'use client'
 import { SUser } from "@/db/types"
-import { createContext, ReactNode, useContext } from "react"
+import { createContext, ReactNode } from "react"
 
 
-const UserContext = createContext<SUser>(null!)
+const UserContext = createContext<SUser | null>(null)
 
 export function UserProvider({
     user,
@@ -14,6 +15,9 @@ export function UserProvider({
     return <UserContext.Provider value={user}>{children}</UserContext.Provider>
 }
 
-export function useUser() {
-    return useContext(UserContext) 
-}
+// export function useUser() {
+//     return useContext(UserContext) 
+// }
+
+
+// // import { useMemo } from "react";
