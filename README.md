@@ -12,9 +12,9 @@ A fullstack chat-app with **Nextjs** , **Socket.io** and **Typescript** .
 | Frontend | Backend | 
 |----------| ---------- |
 | ✅ Next.js 15 | ✅ Socket.io |
-| ✅ React 19 | ✅ Neon (postgresQL) | 
+| ✅ React 19 | ✅ Neon (postgresQL) |
 | ✅ TailwindCSS | ✅ Drizzle orm |
-| ✅ Zustand | ✅ Kinde auth |
+| ✅ Zustand | ✅ Better-auth |
 
 ## 🖌 UI Libraries
 - **shadcn/ui** (includes Radix UI components for accessibility and modern UI)
