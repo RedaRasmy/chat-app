@@ -7,6 +7,8 @@ export const env = createEnv({
     server: {
         DATABASE_URL: z.string().url(),
         BETTER_AUTH_SECRET: z.string().min(1),
+        RESEND_API_KEY : z.string().min(1),
+        ADMIN_EMAIL : z.string().email()
         // GITHUB_CLIENT_SECRET: z.string().min(1),
         // GITHUB_CLIENT_ID: z.string().min(1),
         // GOOGLE_CLIENT_ID : z.string().min(1),
