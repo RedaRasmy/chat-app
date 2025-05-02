@@ -3,7 +3,7 @@ import { db } from "@/db/drizzle"
 import { chats, messages, user } from "@/db/schema"
 import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
-import cleanChat from "@/utils/cleanChat"
+import cleanChat, { ChatToClean } from "@/utils/cleanChat"
 import { and, eq, ilike, inArray, ne, notInArray, or } from "drizzle-orm"
 import { headers } from "next/headers"
 import { z } from "zod"
@@ -45,7 +45,7 @@ export const getChats = actionClient
             },
         })
 
-        return fetchedChats.map((chat) => cleanChat(chat, userId))
+        return fetchedChats.map((chat) => cleanChat(chat as ChatToClean, userId))
     })
 
 // MARK: GET MESSAGES
@@ -107,7 +107,7 @@ export const getChat = actionClient
                 participant2: true,
             },
         })
-        if (chatFound) return cleanChat(chatFound, userId)
+        if (chatFound) return cleanChat(chatFound as ChatToClean, userId)
     })
 
 
