@@ -1,10 +1,11 @@
 import { Chat, SChat, SUser } from "@/db/types"
-import { Prettify } from "@/lib/utils"
+import { Prettify } from "@/lib/utility-types"
 
 type InputChat = Prettify<SChat & {
     participant1 : SUser
     participant2 : SUser
 }> 
+
 /**
  *
  * @param {InputChat} chat chat to clean
