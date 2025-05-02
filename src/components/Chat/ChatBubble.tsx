@@ -17,8 +17,6 @@ export default function ChatBubble({
     const isSender = message.senderId === user.id
     const showSeen = isSender && message.seen
 
-    console.log('user : ',user)
-
     return (
         <div className={cn("chat",{
             'opacity-40 ' : isPending,
