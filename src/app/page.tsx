@@ -12,16 +12,18 @@ import Loading from "./loading"
 // import Loading from "./loading"
 
 export default function Home() {
-    const { isPending ,  } = useSession()
+    const { isPending ,  error} = useSession()
 
     // const data = await auth.api.getSession({
     //     headers : await headers()
     // })
 
+    // throw new Error('test')
+
     // console.log('session in home :',data)
     if (isPending) return <Loading />
 
-    // if (error) return <div>{error.message}</div>
+    if (error) return <div>{error.message}</div>
 
     // if (!data) return <div>Not Authorized</div>
 

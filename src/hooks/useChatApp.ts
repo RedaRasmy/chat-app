@@ -7,7 +7,10 @@ import useUser from "./useUser"
 // import { useCurrentChatId } from "./useCurrentChat"
 
 export default function useChatApp() {
-    // should be called only in ChatApp component
+    ///////////////////////////
+    // this hook should be called only in ChatApp component
+    ///////////////////////
+
     const user = useUser()
 
     // Register User 
@@ -42,7 +45,6 @@ export default function useChatApp() {
 
     // Listen for events
 
-    // const currentChatId = useCurrentChatId()
 
     useSocketEvents([
         {
