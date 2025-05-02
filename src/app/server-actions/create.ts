@@ -4,7 +4,7 @@ import { chats, messages, user } from "@/db/schema"
 import { insertChatSchema, insertMessageSchema } from "@/db/zod-schemas"
 // import { auth } from "@/lib/auth"
 import { actionClient } from "@/lib/safe-action"
-import cleanChat from "@/utils/cleanChat"
+import cleanChat, { ChatToClean } from "@/utils/cleanChat"
 import { and, eq, or } from "drizzle-orm"
 // import { headers } from "next/headers"
 
@@ -33,7 +33,7 @@ export const createChat = actionClient
             }
         })
 
-        if (existingChat) return cleanChat(existingChat, participant1)
+        if (existingChat) return cleanChat(existingChat as ChatToClean, participant1)
 
         const newChat = (
             await db

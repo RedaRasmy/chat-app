@@ -1,7 +1,7 @@
 import { Chat, SChat, SUser } from "@/db/types"
 import { Prettify } from "@/lib/utility-types"
 
-type InputChat = Prettify<SChat & {
+export type ChatToClean = Prettify<SChat & {
     participant1 : SUser
     participant2 : SUser
 }> 
@@ -13,7 +13,7 @@ type InputChat = Prettify<SChat & {
  * @return {Chat} clean chat 
  */
 
-export default function cleanChat(chat: InputChat , userId : SUser['id'] ):Chat {
+export default function cleanChat(chat: ChatToClean , userId : SUser['id'] ):Chat {
     return {
         id : chat.id,
         createdAt : chat.createdAt,
